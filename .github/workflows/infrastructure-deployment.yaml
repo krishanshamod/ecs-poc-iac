@@ -32,6 +32,7 @@ jobs:
           no-fail-on-empty-changeset: "1"
           no-delete-failed-changeset: "1"
           disable-rollback: "1"
+          capabilities: CAPABILITY_NAMED_IAM
           parameter-overrides: |
             EnvironmentName=dev
 
@@ -43,6 +44,7 @@ jobs:
           no-fail-on-empty-changeset: "1"
           no-delete-failed-changeset: "1"
           disable-rollback: "1"
+          capabilities: CAPABILITY_NAMED_IAM
 
       - name: Deploy ECS Cloudformation Stack
         uses: aws-actions/aws-cloudformation-github-deploy@v1
@@ -52,3 +54,4 @@ jobs:
           no-fail-on-empty-changeset: "1"
           no-delete-failed-changeset: "1"
           disable-rollback: "1"
+          capabilities: CAPABILITY_NAMED_IAM
