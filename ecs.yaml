@@ -1,0 +1,54 @@
+Description: >
+  This template deploys an ECS cluster, with a task definition, service, and load balancer.
+
+Parameters:
+  ProjectName:
+    Description: The name of the project
+    Type: String
+    Default: ecs-poc
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+    Default: dev
+
+  ServiceName:
+    Description: Service name
+    Type: String
+    Default: simple-web-application
+
+  TaskDefinition:
+    Description: Task definition
+    Type: String
+    Default: simple-web-application
+
+  ImageName:
+    Description: Docker image name
+    Type: String
+    Default: 499249761013.dkr.ecr.us-east-1.amazonaws.com/ecs-poc
+
+  ImageTag:
+    Description: Docker image tag
+    Type: String
+    Default: c1218d46045bb2e98eb1922ac4b60f6e3f6ee15a
+
+  ContainerPort:
+    Description: Container port
+    Type: Number
+    Default: 8081
+
+Resources:
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub ${ProjectName}-${EnvironmentName}-cluster
+      ClusterSettings:
+        - Name: containerInsights
+          Value: enabled
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-cluster
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName

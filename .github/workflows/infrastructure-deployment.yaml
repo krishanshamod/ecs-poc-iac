@@ -1,4 +1,4 @@
-name: Infra Deployment Workflow
+name: Infrastructure Deployment Workflow
 
 on:
   push:
@@ -39,5 +39,13 @@ jobs:
         with:
           name: "ecr-stack"
           template: "ecr.yaml"
+          no-fail-on-empty-changeset: "1"
+          no-delete-failed-changeset: "1"
+
+      - name: Deploy ECS Cloudformation Stack
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: "ecs-stack"
+          template: "ecs.yaml"
           no-fail-on-empty-changeset: "1"
           no-delete-failed-changeset: "1"
