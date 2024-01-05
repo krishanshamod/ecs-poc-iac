@@ -22,15 +22,10 @@ Parameters:
     Type: String
     Default: simple-web-application
 
-  ImageName:
-    Description: Docker image name
+  Image:
+    Description: Docker image
     Type: String
-    Default: 499249761013.dkr.ecr.us-east-1.amazonaws.com/ecs-poc
-
-  ImageTag:
-    Description: Docker image tag
-    Type: String
-    Default: c1218d46045bb2e98eb1922ac4b60f6e3f6ee15a
+    Default: 499249761013.dkr.ecr.us-east-1.amazonaws.com/ecs-poc:c1218d46045bb2e98eb1922ac4b60f6e3f6ee15a
 
   ContainerPort:
     Description: Container port
@@ -48,6 +43,83 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName}-${EnvironmentName}-cluster
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    DependsOn: LogGroup
+    Properties:
+      Family: !Sub ${ServiceName}-task-definition
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      # 256 (.25 vCPU) - Available memory values: 0.5GB, 1GB, 2GB
+      # 512 (.5 vCPU) - Available memory values: 1GB, 2GB, 3GB, 4GB
+      # 1024 (1 vCPU) - Available memory values: 2GB, 3GB, 4GB, 5GB, 6GB, 7GB, 8GB
+      # 2048 (2 vCPU) - Available memory values: Between 4GB and 16GB in 1GB increments
+      # 4096 (4 vCPU) - Available memory values: Between 8GB and 30GB in 1GB increments
+      Cpu: 256
+      # 0.5GB, 1GB, 2GB - Available cpu values: 256 (.25 vCPU)
+      # 1GB, 2GB, 3GB, 4GB - Available cpu values: 512 (.5 vCPU)
+      # 2GB, 3GB, 4GB, 5GB, 6GB, 7GB, 8GB - Available cpu values: 1024 (1 vCPU)
+      # Between 4GB and 16GB in 1GB increments - Available cpu values: 2048 (2 vCPU)
+      # Between 8GB and 30GB in 1GB increments - Available cpu values: 4096 (4 vCPU)
+      Memory: 0.5GB
+      ExecutionRoleArn: !Ref ExecutionRole
+      ContainerDefinitions:
+        - Name: !Ref ServiceName
+          Image: !Ref Image
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !Ref LogGroup
+              awslogs-stream-prefix: ecs
+      Tags:
+        - Key: Name
+          Value: !Sub ${ServiceName}-task-definition
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+        - Key: Service
+          Value: !Ref ServiceName
+        - Key: Cluster
+          Value: !Ref Cluster
+
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ServiceName}-execution-role
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+      Tags:
+        - Key: Name
+          Value: !Sub ${ServiceName}-execution-role
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/ecs/${ServiceName}-task-definition"
+      RetentionInDays: 60
+      Tags:
+        - Key: Name
+          Value: !Sub ${ServiceName}-log-group
         - Key: Project
           Value: !Ref ProjectName
         - Key: Environment
