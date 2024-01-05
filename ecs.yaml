@@ -17,11 +17,6 @@ Parameters:
     Type: String
     Default: simple-web-application
 
-  TaskDefinition:
-    Description: Task definition
-    Type: String
-    Default: simple-web-application
-
   Image:
     Description: Docker image
     Type: String
