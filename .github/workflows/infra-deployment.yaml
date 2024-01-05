@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy-infra:
+  deploy-infrastructure:
     runs-on: ubuntu-latest
     environment: development
     permissions:
@@ -32,4 +32,12 @@ jobs:
           no-fail-on-empty-changeset: "1"
           no-delete-failed-changeset: "1"
           parameter-overrides: |
-            EnvironmentName=test
+            EnvironmentName=dev
+
+      - name: Deploy ECR Cloudformation Stack
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: "ecr-stack"
+          template: "ecr.yaml"
+          no-fail-on-empty-changeset: "1"
+          no-delete-failed-changeset: "1"

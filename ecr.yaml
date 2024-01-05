@@ -1,0 +1,29 @@
+Description: >
+  This template deploys an ECR repository.
+
+Parameters:
+  ProjectName:
+    Description: The name of the project
+    Type: String
+    Default: ecs-poc
+
+  RepositoryName:
+    Description: The name of the ECR repository
+    Type: String
+    Default: ecs-poc
+
+Resources:
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Sub ${RepositoryName}-repository
+      ImageTagMutability: MUTABLE
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      EncryptionConfiguration:
+        EncryptionType: AES256
+      Tags:
+        - Key: Name
+          Value: !Sub ${RepositoryName}-repository
+        - Key: Project
+          Value: !Ref ProjectName
