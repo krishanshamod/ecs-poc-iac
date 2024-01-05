@@ -16,7 +16,7 @@ Resources:
   ECRRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: !Sub ${RepositoryName}-repository
+      RepositoryName: !Ref RepositoryName
       ImageTagMutability: MUTABLE
       ImageScanningConfiguration:
         ScanOnPush: true
@@ -24,6 +24,13 @@ Resources:
         EncryptionType: AES256
       Tags:
         - Key: Name
-          Value: !Sub ${RepositoryName}-repository
+          Value: !Ref RepositoryName
         - Key: Project
           Value: !Ref ProjectName
+
+Outputs:
+  ECRURI:
+    Description: The URL of the ECR repository
+    Value: !GetAtt ECRRepository.RepositoryUri
+    Export:
+      Name: !Sub ${RepositoryName}-uri

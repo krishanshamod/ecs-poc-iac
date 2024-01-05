@@ -320,58 +320,40 @@ Outputs:
     Description: A reference to the created VPC
     Value: !Ref VPC
     Export:
-      Name: VPC
-
-  PublicSubnets:
-    Description: A list of the public subnets
-    Value: !Join [",", [!Ref PublicSubnet1, !Ref PublicSubnet2]]
-    Export:
-      Name: PublicSubnets
-
-  PrivateSubnets:
-    Description: A list of the private subnets
-    Value: !Join [",", [!Ref PrivateSubnet1, !Ref PrivateSubnet2]]
-    Export:
-      Name: PrivateSubnets
-
-  DatabaseSubnets:
-    Description: A list of the database subnets
-    Value: !Join [",", [!Ref DatabaseSubnet1, !Ref DatabaseSubnet2]]
-    Export:
-      Name: DatabaseSubnets
+      Name: !Sub ${ProjectName}-${EnvironmentName}-vpc
 
   PublicSubnet1:
     Description: A reference to the public subnet in the 1st Availability Zone
     Value: !Ref PublicSubnet1
     Export:
-      Name: PublicSubnet1
+      Name: !Sub ${ProjectName}-${EnvironmentName}-public-subnet-1
 
   PublicSubnet2:
     Description: A reference to the public subnet in the 2nd Availability Zone
     Value: !Ref PublicSubnet2
     Export:
-      Name: PublicSubnet2
+      Name: !Sub ${ProjectName}-${EnvironmentName}-public-subnet-2
 
   PrivateSubnet1:
     Description: A reference to the private subnet in the 1st Availability Zone
     Value: !Ref PrivateSubnet1
     Export:
-      Name: PrivateSubnet1
+      Name: !Sub ${ProjectName}-${EnvironmentName}-private-subnet-1
 
   PrivateSubnet2:
     Description: A reference to the private subnet in the 2nd Availability Zone
     Value: !Ref PrivateSubnet2
     Export:
-      Name: PrivateSubnet2
+      Name: !Sub ${ProjectName}-${EnvironmentName}-private-subnet-2
 
   DatabaseSubnet1:
     Description: A reference to the database subnet in the 1st Availability Zone
     Value: !Ref DatabaseSubnet1
     Export:
-      Name: DatabaseSubnet1
+      Name: !Sub ${ProjectName}-${EnvironmentName}-database-subnet-1
 
   DatabaseSubnet2:
     Description: A reference to the database subnet in the 2nd Availability Zone
     Value: !Ref DatabaseSubnet2
     Export:
-      Name: DatabaseSubnet2
+      Name: !Sub ${ProjectName}-${EnvironmentName}-database-subnet-2
