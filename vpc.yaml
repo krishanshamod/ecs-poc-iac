@@ -82,7 +82,7 @@ Resources:
   PublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref VPCtest
       AvailabilityZone: !Select [0, !GetAZs ""]
       CidrBlock: !Ref PublicSubnet1CIDR
       MapPublicIpOnLaunch: true
