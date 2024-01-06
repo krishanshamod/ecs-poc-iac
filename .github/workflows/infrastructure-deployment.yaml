@@ -12,6 +12,8 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    env:
+      PROJECT_NAME: ecs-poc
 
     steps:
       - name: Checkout the code
@@ -27,7 +29,7 @@ jobs:
       - name: Deploy VPC Cloudformation Stack
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: "vpc-stack"
+          name: ${{ env.PROJECT_NAME }}-vpc-stack
           template: "vpc.yaml"
           no-fail-on-empty-changeset: "1"
           disable-rollback: "1"
@@ -38,7 +40,7 @@ jobs:
       - name: Deploy ECR Cloudformation Stack
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: "ecr-stack"
+          name: ${{ env.PROJECT_NAME }}-ecr-stack
           template: "ecr.yaml"
           no-fail-on-empty-changeset: "1"
           disable-rollback: "1"
@@ -47,7 +49,7 @@ jobs:
       - name: Deploy ECS Cloudformation Stack
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: "ecs-stack"
+          name: ${{ env.PROJECT_NAME }}-ecs-stack
           template: "ecs.yaml"
           no-fail-on-empty-changeset: "1"
           disable-rollback: "1"
