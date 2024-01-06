@@ -1,6 +1,9 @@
 name: Infrastructure Deployment Workflow - Development
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -45,6 +48,7 @@ jobs:
             --region ${{ secrets.AWS_Region }}
 
       - name: Deploy VPC Cloudformation Stack
+        if: ${{ github.event.pull_request.merged == true || github.event_name == 'push' }}
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ${{ env.PROJECT_NAME }}-vpc-stack
@@ -55,7 +59,26 @@ jobs:
           parameter-overrides: |
             EnvironmentName=dev
 
+      - name: Show ECR Cloudformation Stack changes
+        run: |
+          aws cloudformation create-change-set \
+            --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-ecr-stack-changes \
+            --template-body file://ecr.yaml \
+            --parameters ParameterKey=EnvironmentName,ParameterValue=dev \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --region ${{ secrets.AWS_Region }}
+          aws cloudformation describe-change-set \
+            --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-ecr-stack-changes \
+            --region ${{ secrets.AWS_Region }}
+          aws cloudformation delete-change-set \
+            --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-ecr-stack-changes \
+            --region ${{ secrets.AWS_Region }}
+
       - name: Deploy ECR Cloudformation Stack
+        if: ${{ github.event.pull_request.merged == true || github.event_name == 'push' }}
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ${{ env.PROJECT_NAME }}-ecr-stack
@@ -64,7 +87,26 @@ jobs:
           disable-rollback: "1"
           capabilities: CAPABILITY_NAMED_IAM
 
+      - name: Show ECS Cloudformation Stack changes
+        run: |
+          aws cloudformation create-change-set \
+            --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
+            --template-body file://ecs.yaml \
+            --parameters ParameterKey=EnvironmentName,ParameterValue=dev \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --region ${{ secrets.AWS_Region }}
+          aws cloudformation describe-change-set \
+            --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
+            --region ${{ secrets.AWS_Region }}
+          aws cloudformation delete-change-set \
+            --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
+            --region ${{ secrets.AWS_Region }}
+
       - name: Deploy ECS Cloudformation Stack
+        if: ${{ github.event.pull_request.merged == true || github.event_name == 'push' }}
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ${{ env.PROJECT_NAME }}-ecs-stack
