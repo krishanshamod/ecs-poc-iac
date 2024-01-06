@@ -30,7 +30,6 @@ jobs:
           name: "vpc-stack"
           template: "vpc.yaml"
           no-fail-on-empty-changeset: "1"
-          no-delete-failed-changeset: "1"
           disable-rollback: "1"
           capabilities: CAPABILITY_NAMED_IAM
           parameter-overrides: |
@@ -42,7 +41,6 @@ jobs:
           name: "ecr-stack"
           template: "ecr.yaml"
           no-fail-on-empty-changeset: "1"
-          no-delete-failed-changeset: "1"
           disable-rollback: "1"
           capabilities: CAPABILITY_NAMED_IAM
 
@@ -52,6 +50,5 @@ jobs:
           name: "ecs-stack"
           template: "ecs.yaml"
           no-fail-on-empty-changeset: "1"
-          no-delete-failed-changeset: "1"
           disable-rollback: "1"
           capabilities: CAPABILITY_NAMED_IAM
