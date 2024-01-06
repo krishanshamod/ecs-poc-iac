@@ -268,8 +268,7 @@ Resources:
         - Key: deregistration_delay.timeout_seconds
           Value: 300
       TargetType: ip
-      VpcId:
-        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
+      VpcId: !ImportValue ecs-poc-dev-vpc
       Tags:
         - Key: Name
           Value: !Sub ${ServiceName}-${EnvironmentName}-target-group
