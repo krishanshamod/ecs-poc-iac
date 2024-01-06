@@ -72,7 +72,19 @@ jobs:
           parameter-overrides: |
             EnvironmentName=dev
 
+      - name: Check if ECR Cloudfomation Stack exists
+        id: check-ecr-stack
+        continue-on-error: true
+        run: |
+          $output=(aws cloudformation describe-stacks \
+            --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
+            --region ${{ secrets.AWS_Region }} \
+            --query 'Stacks[].StackName' \
+            --output text)
+          echo "::set-output name=stdout::$output"
+
       - name: Show ECR Cloudformation Stack changes
+        if: steps.check-ecr-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-ecr-stack
         run: |
           aws cloudformation create-change-set \
             --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
@@ -104,11 +116,12 @@ jobs:
         id: check-ecs-stack
         continue-on-error: true
         run: |
-          aws cloudformation describe-stacks \
+          $output=(aws cloudformation describe-stacks \
             --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
             --region ${{ secrets.AWS_Region }} \
             --query 'Stacks[].StackName' \
-            --output text
+            --output text)
+          echo "::set-output name=stdout::$output"
 
       - name: Show ECS Cloudformation Stack changes
         if: steps.check-ecs-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-ecs-stack
