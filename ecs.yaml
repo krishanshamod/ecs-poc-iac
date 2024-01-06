@@ -268,7 +268,8 @@ Resources:
         - Key: deregistration_delay.timeout_seconds
           Value: 300
       TargetType: ip
-      VpcId: !ImportValue VPC
+      VpcId:
+        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
       Tags:
         - Key: Name
           Value: !Sub ${ServiceName}-${EnvironmentName}-target-group
@@ -281,7 +282,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: !Sub ${ProjectName}-${EnvironmentName}-load-balancer-security-group
-      VpcId: !Ref VPC
+      VpcId:
+        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 80
@@ -303,7 +305,8 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: !Sub ${ServiceName}-${EnvironmentName}-container-security-group
-      VpcId: !Ref VPC
+      VpcId:
+        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: !Ref ContainerPort
