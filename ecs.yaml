@@ -154,8 +154,8 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: DISABLED
           Subnets:
-            - !ImportValue Fn::Sub: ${ProjectName}-${EnvironmentName}-private-subnet-1
-            - !ImportValue Fn::Sub: ${ProjectName}-${EnvironmentName}-private-subnet-2
+            - Fn::ImportValue !Sub ${ProjectName}-${EnvironmentName}-private-subnet-1
+            - Fn::ImportValue !Sub ${ProjectName}-${EnvironmentName}-private-subnet-2
           SecurityGroups:
             - !Ref ContainerSecurityGroup
       LoadBalancers:
@@ -182,8 +182,8 @@ Resources:
       SecurityGroups:
         - !Ref LoadBalancerSecurityGroup
       Subnets:
-        - !ImportValue Fn::Sub: ${ProjectName}-${EnvironmentName}-public-subnet-1
-        - !ImportValue Fn::Sub: ${ProjectName}-${EnvironmentName}-public-subnet-2
+        - Fn::ImportValue !Sub ${ProjectName}-${EnvironmentName}-public-subnet-1
+        - Fn::ImportValue !Sub ${ProjectName}-${EnvironmentName}-public-subnet-2
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName}-${EnvironmentName}-load-balancer
@@ -268,8 +268,7 @@ Resources:
         - Key: deregistration_delay.timeout_seconds
           Value: 300
       TargetType: ip
-      VpcId:
-        !ImportValue Fn::Sub: ${ProjectName}-${EnvironmentName}-vpc
+      VpcId: Fn::ImportValue !Sub ${ProjectName}-${EnvironmentName}-vpc
       Tags:
         - Key: Name
           Value: !Sub ${ServiceName}-${EnvironmentName}-target-group
