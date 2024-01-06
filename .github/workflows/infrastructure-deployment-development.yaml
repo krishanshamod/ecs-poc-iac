@@ -88,7 +88,17 @@ jobs:
           disable-rollback: "1"
           capabilities: CAPABILITY_NAMED_IAM
 
+      - name: Check if ECS Cloudfomation Stack exists
+        id: check-ecs-stack
+        run: |
+          aws cloudformation describe-stacks \
+            --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
+            --region ${{ secrets.AWS_Region }} \
+            --query 'Stacks[].StackName' \
+            --output text
+
       - name: Show ECS Cloudformation Stack changes
+        if: ${{ steps.check-ecs-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-ecs-stack }}
         run: |
           aws cloudformation create-change-set \
             --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
