@@ -29,7 +29,22 @@ jobs:
           role-session-name: "GitHub_to_AWS_via_FederatedOIDC"
           aws-region: ${{ secrets.AWS_Region }}
 
+      - name: Check if VPC Cloudfomation Stack exists
+        id: check-vpc-stack
+        continue-on-error: true
+        run: |
+          aws cloudformation describe-stacks \
+            --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
+            --region ${{ secrets.AWS_Region }} \
+            --query 'Stacks[].StackName' \
+            --output text
+
+      - name: Debug check-ecs-stack output
+        run: |
+          echo "check-ecs-stack output: ${{ steps.check-vpc-stack.outputs.stdout }}"
+
       - name: Show VPC Cloudformation Stack changes
+        if: steps.check-vpc-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-vpc-stack
         run: |
           aws cloudformation create-change-set \
             --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
@@ -97,8 +112,6 @@ jobs:
             --region ${{ secrets.AWS_Region }} \
             --query 'Stacks[].StackName' \
             --output text
-        outputs:
-          stdout: ${{ steps.check-ecs-stack.outputs.stdout }}
 
       - name: Show ECS Cloudformation Stack changes
         if: steps.check-ecs-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-ecs-stack
