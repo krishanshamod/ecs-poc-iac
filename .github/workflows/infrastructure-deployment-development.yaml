@@ -111,6 +111,16 @@ jobs:
           disable-rollback: "1"
           capabilities: CAPABILITY_NAMED_IAM
 
+      - name: Deploy S3 Cloudformation Stack
+        if: github.event.pull_request.merged == true || github.event_name == 'push'
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ${{ env.PROJECT_NAME }}-s3-stack
+          template: "s3.yaml"
+          no-fail-on-empty-changeset: "1"
+          disable-rollback: "1"
+          capabilities: CAPABILITY_NAMED_IAM
+
       # - name: Check if ECS Cloudfomation Stack exists
       #   id: check-ecs-stack
       #   continue-on-error: true

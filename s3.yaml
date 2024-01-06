@@ -1,0 +1,44 @@
+Description: >
+  This template deploys a S3 bucket.
+
+Parameters:
+  ProjectName:
+    Description: The name of the project
+    Type: String
+    Default: ecs-poc
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+    Default: dev
+
+  BucketName:
+    Description: The name of the S3 bucket
+    Type: String
+    Default: ecs-poc-ksp
+
+Resources:
+  Bucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: !Ref BucketName
+      VersioningConfiguration:
+        Status: Disabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      Tags:
+        - Key: Name
+          Value: !Ref BucketName
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+Outputs:
+  BucketARN:
+    Description: The ARN of the S3 bucket
+    Value: !GetAtt Bucket.Arn
+    Export:
+      Name: !Sub ${BucketName}-arn
