@@ -133,7 +133,7 @@ Resources:
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
-          Value: !Sub ${ProjectName}-${EnvironmentName}-private-subnet-1
+          Value: !Sub ${ProjectName}-${EnvironmentName}-private-subnet-2
         - Key: Project
           Value: !Ref ProjectName
         - Key: Environment
@@ -163,7 +163,7 @@ Resources:
       MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
-          Value: !Sub ${ProjectName}-${EnvironmentName}-database-subnet-1
+          Value: !Sub ${ProjectName}-${EnvironmentName}-database-subnet-2
         - Key: Project
           Value: !Ref ProjectName
         - Key: Environment
