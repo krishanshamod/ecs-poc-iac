@@ -41,7 +41,7 @@ jobs:
 
       - name: Debug check-ecs-stack output
         run: |
-          echo "check-ecs-stack output: ${{ steps.check-vpc-stack.outputs.stdout }}"
+          echo ${{ steps.check-vpc-stack.outputs.stdout }}
 
       - name: Show VPC Cloudformation Stack changes
         if: steps.check-vpc-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-vpc-stack
