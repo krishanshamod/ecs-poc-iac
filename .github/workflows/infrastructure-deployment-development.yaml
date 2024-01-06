@@ -24,7 +24,25 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: "GitHub_to_AWS_via_FederatedOIDC"
-          aws-region: "us-east-1"
+          aws-region: ${{ secrets.AWS_Region }}
+
+      - name: Show VPC Cloudformation Stack changes
+        run: |
+          aws cloudformation create-change-set \
+            --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
+            --template-body file://ecs.yaml \
+            --parameters ParameterKey=EnvironmentName,ParameterValue=dev \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --region ${{ secrets.AWS_Region }}
+          aws cloudformation describe-change-set \
+            --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
+            --region ${{ secrets.AWS_Region }}
+          aws cloudformation delete-change-set \
+            --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
+            --region ${{ secrets.AWS_Region }}
 
       - name: Deploy VPC Cloudformation Stack
         uses: aws-actions/aws-cloudformation-github-deploy@v1
