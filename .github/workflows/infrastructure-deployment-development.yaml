@@ -95,7 +95,7 @@ jobs:
             --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
             --region ${{ secrets.AWS_Region }} \
             --query 'Stacks[].StackName' \
-            --output text
+            --output text || true
 
       - name: Show ECS Cloudformation Stack changes
         if: steps.check-ecs-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-ecs-stack
