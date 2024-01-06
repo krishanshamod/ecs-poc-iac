@@ -33,7 +33,7 @@ jobs:
         id: check-vpc-stack
         continue-on-error: true
         run: |
-          $output=(aws cloudformation describe-stacks \
+          output=$(aws cloudformation describe-stacks \
             --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
             --region ${{ secrets.AWS_Region }} \
             --query 'Stacks[].StackName' \
@@ -76,7 +76,7 @@ jobs:
         id: check-ecr-stack
         continue-on-error: true
         run: |
-          $output=(aws cloudformation describe-stacks \
+          output=$(aws cloudformation describe-stacks \
             --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
             --region ${{ secrets.AWS_Region }} \
             --query 'Stacks[].StackName' \
@@ -116,7 +116,7 @@ jobs:
         id: check-ecs-stack
         continue-on-error: true
         run: |
-          $output=(aws cloudformation describe-stacks \
+          output=$(aws cloudformation describe-stacks \
             --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
             --region ${{ secrets.AWS_Region }} \
             --query 'Stacks[].StackName' \
