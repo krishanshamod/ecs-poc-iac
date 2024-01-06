@@ -32,19 +32,19 @@ jobs:
       - name: Show VPC Cloudformation Stack changes
         run: |
           aws cloudformation create-change-set \
-            --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
-            --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
-            --template-body file://ecs.yaml \
-            --parameters ParameterKey=EnvironmentName,ParameterValue=dev \
+            --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-vpc-stack-changes \
+            --template-body file://vpc.yaml \
             --capabilities CAPABILITY_NAMED_IAM \
-            --region ${{ secrets.AWS_Region }}
+            --region ${{ secrets.AWS_Region }} \
+            --parameters ParameterKey=EnvironmentName,ParameterValue=dev
           aws cloudformation describe-change-set \
-            --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
-            --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
+            --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-vpc-stack-changes \
             --region ${{ secrets.AWS_Region }}
           aws cloudformation delete-change-set \
-            --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
-            --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
+            --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
+            --change-set-name ${{ env.PROJECT_NAME }}-vpc-stack-changes \
             --region ${{ secrets.AWS_Region }}
 
       - name: Deploy VPC Cloudformation Stack
