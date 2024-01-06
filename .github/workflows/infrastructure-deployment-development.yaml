@@ -65,7 +65,6 @@ jobs:
             --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
             --change-set-name ${{ env.PROJECT_NAME }}-ecr-stack-changes \
             --template-body file://ecr.yaml \
-            --parameters ParameterKey=EnvironmentName,ParameterValue=dev \
             --capabilities CAPABILITY_NAMED_IAM \
             --region ${{ secrets.AWS_Region }}
           aws cloudformation describe-change-set \
@@ -93,7 +92,6 @@ jobs:
             --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
             --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
             --template-body file://ecs.yaml \
-            --parameters ParameterKey=EnvironmentName,ParameterValue=dev \
             --capabilities CAPABILITY_NAMED_IAM \
             --region ${{ secrets.AWS_Region }}
           aws cloudformation describe-change-set \
