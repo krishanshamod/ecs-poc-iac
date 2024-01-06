@@ -33,15 +33,12 @@ jobs:
         id: check-vpc-stack
         continue-on-error: true
         run: |
-          aws cloudformation describe-stacks \
+          $output=(aws cloudformation describe-stacks \
             --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
             --region ${{ secrets.AWS_Region }} \
             --query 'Stacks[].StackName' \
-            --output text
-
-      - name: Debug check-ecs-stack output
-        run: |
-          echo ${{ steps.check-vpc-stack.outputs.stdout }}
+            --output text)
+          echo "::set-output name=stdout::$output"
 
       - name: Show VPC Cloudformation Stack changes
         if: steps.check-vpc-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-vpc-stack
