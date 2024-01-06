@@ -298,3 +298,10 @@ Resources:
           Value: !Ref ProjectName
         - Key: Environment
           Value: !Ref EnvironmentName
+
+Outputs:
+  LoadBalancerURL:
+    Description: The URL of the load balancer
+    Value: !Sub https://${LoadBalancer.DNSName}/
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-load-balancer-url
