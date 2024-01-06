@@ -256,7 +256,7 @@ Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub ${ServiceName}-${EnvironmentName}-target-group
+      Name: !Sub ${ServiceName}-${EnvironmentName}-tg
       HealthCheckIntervalSeconds: 10
       HealthCheckPath: !Ref HealthCheckPath
       HealthCheckTimeoutSeconds: 5
@@ -272,7 +272,7 @@ Resources:
         Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
       Tags:
         - Key: Name
-          Value: !Sub ${ServiceName}-${EnvironmentName}-target-group
+          Value: !Sub ${ServiceName}-${EnvironmentName}-tg
         - Key: Project
           Value: !Ref ProjectName
         - Key: Environment
@@ -281,7 +281,7 @@ Resources:
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Sub ${ProjectName}-${EnvironmentName}-load-balancer-security-group
+      GroupDescription: !Sub ${ProjectName}-${EnvironmentName}-load-balancer-sg
       VpcId:
         Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
       SecurityGroupIngress:
@@ -295,7 +295,7 @@ Resources:
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
-          Value: !Sub ${ProjectName}-${EnvironmentName}-load-balancer-security-group
+          Value: !Sub ${ProjectName}-${EnvironmentName}-load-balancer-sg
         - Key: Project
           Value: !Ref ProjectName
         - Key: Environment
@@ -304,7 +304,7 @@ Resources:
   ContainerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Sub ${ServiceName}-${EnvironmentName}-container-security-group
+      GroupDescription: !Sub ${ServiceName}-${EnvironmentName}-container-sg
       VpcId:
         Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
       SecurityGroupIngress:
@@ -314,7 +314,7 @@ Resources:
           SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
       Tags:
         - Key: Name
-          Value: !Sub ${ServiceName}-${EnvironmentName}-container-security-group
+          Value: !Sub ${ServiceName}-${EnvironmentName}-container-sg
         - Key: Project
           Value: !Ref ProjectName
         - Key: Environment
