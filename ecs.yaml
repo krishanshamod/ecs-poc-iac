@@ -204,13 +204,6 @@ Resources:
             Protocol: HTTPS
             Port: 443
             StatusCode: HTTP_301
-      Tags:
-        - Key: Name
-          Value: !Sub ${ProjectName}-${EnvironmentName}-load-balancer-listener-http
-        - Key: Project
-          Value: !Ref ProjectName
-        - Key: Environment
-          Value: !Ref EnvironmentName
 
   ListenerHTTPS:
     Type: AWS::ElasticLoadBalancingV2::Listener
@@ -223,13 +216,6 @@ Resources:
       DefaultActions:
         - TargetGroupArn: !Ref TargetGroup
           Type: forward
-      Tags:
-        - Key: Name
-          Value: !Sub ${ProjectName}-${EnvironmentName}-load-balancer-listener-https
-        - Key: Project
-          Value: !Ref ProjectName
-        - Key: Environment
-          Value: !Ref EnvironmentName
 
   ListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
@@ -245,13 +231,6 @@ Resources:
       Actions:
         - TargetGroupArn: !Ref TargetGroup
           Type: forward
-      Tags:
-        - Key: Name
-          Value: !Sub ${ProjectName}-${EnvironmentName}-load-balancer-listener-rule
-        - Key: Project
-          Value: !Ref ProjectName
-        - Key: Environment
-          Value: !Ref EnvironmentName
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
