@@ -90,12 +90,15 @@ jobs:
 
       - name: Check if ECS Cloudfomation Stack exists
         id: check-ecs-stack
+        continue-on-error: true
         run: |
           aws cloudformation describe-stacks \
             --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
             --region ${{ secrets.AWS_Region }} \
             --query 'Stacks[].StackName' \
-            --output text || true
+            --output text
+        outputs:
+          stdout: ${{ steps.check-ecs-stack.outputs.stdout }}
 
       - name: Show ECS Cloudformation Stack changes
         if: steps.check-ecs-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-ecs-stack
