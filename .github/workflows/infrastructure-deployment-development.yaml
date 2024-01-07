@@ -151,6 +151,16 @@ jobs:
       #       --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
       #       --region ${{ secrets.AWS_Region }}
 
+      - name: Deploy RDS Cloudformation Stack
+        if: github.event.pull_request.merged == true || github.event_name == 'push'
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ${{ env.PROJECT_NAME }}-rds-stack
+          template: "rds.yaml"
+          no-fail-on-empty-changeset: "1"
+          disable-rollback: "1"
+          capabilities: CAPABILITY_NAMED_IAM
+
       - name: Deploy ECS Cloudformation Stack
         if: github.event.pull_request.merged == true || github.event_name == 'push'
         uses: aws-actions/aws-cloudformation-github-deploy@v1

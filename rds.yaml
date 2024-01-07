@@ -21,11 +21,13 @@ Parameters:
     Description: Username for the RDS database
     Type: String
     NoEcho: true
+    Default: admin
 
   DBPassword:
     Description: Password for the RDS database
     Type: String
     NoEcho: true
+    Default: dfnoensevd143
 
   DBInstanceClass:
     Description: Instance class for the RDS instance
