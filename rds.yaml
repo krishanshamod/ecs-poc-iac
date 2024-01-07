@@ -69,6 +69,7 @@ Resources:
   DatabaseSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-db-secret
       Description: "This is the secret for my RDS instance"
       GenerateSecretString:
         GenerateStringKey: "password"
