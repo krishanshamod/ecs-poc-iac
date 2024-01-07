@@ -25,7 +25,8 @@ ssh -N -L 5432:<database-endpoint>:5432 -p 22 -i bastion-host-key.pem ec2-user@<
 ```
 
 Replace the placeholders:
-⋅⋅* `database-endpoint`: Replace with the actual AWS RDS endpoint.
-⋅⋅* `bastion-host-ip`: Replace with the public IP address of your Bastion host.
+
+- `database-endpoint`: Replace with the actual AWS RDS endpoint.
+- `bastion-host-ip`: Replace with the public IP address of your Bastion host.
 
 This command establishes an SSH tunnel, forwarding the database port from the AWS RDS endpoint through the Bastion host to your local machine. After running this command, you can connect to the database on your local machine as if it were running on `localhost`.
