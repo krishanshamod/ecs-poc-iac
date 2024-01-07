@@ -1,0 +1,2 @@
+Description: >
+  This template deploys a private RDS instance with a bastion host to access it.
