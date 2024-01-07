@@ -1,0 +1,28 @@
+Description: >
+  This template deploys a private RDS instance with a bastion host.
+
+Parameters:
+  ProjectName:
+    Description: The name of the project
+    Type: String
+    Default: ecs-poc
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+    Default: dev
+
+Resources:
+  BastionHostKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: !Sub ${ProjectName}-${EnvironmentName}-kp
+      KeyType: rsa
+      KeyFormat: pem
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-kp
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
