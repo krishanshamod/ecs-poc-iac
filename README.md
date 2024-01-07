@@ -15,3 +15,17 @@ aws ssm get-parameter --name /ec2/keypair/<key-pair-id> --with-decryption --quer
 ```
 
 Replace `<key-pair-id>` with the actual ID of your key pair. This command uses AWS Systems Manager (SSM) to securely fetch the private key parameter and save it locally as bastion-host-key.pem. Ensure that you have the AWS CLI configured with the necessary permissions.
+
+### Accessing the Database Locally
+
+To access the database securely from your local machine, you can use the following SSH port forwarding command:
+
+```bash
+ssh -N -L 5432:<database-endpoint>:5432 -p 22 -i bastion-host-key.pem ec2-user@<bastion-host-ip>
+```
+
+Replace the placeholders:
+⋅⋅* `database-endpoint`: Replace with the actual AWS RDS endpoint.
+⋅⋅* `bastion-host-ip`: Replace with the public IP address of your Bastion host.
+
+This command establishes an SSH tunnel, forwarding the database port from the AWS RDS endpoint through the Bastion host to your local machine. After running this command, you can connect to the database on your local machine as if it were running on `localhost`.
