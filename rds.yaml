@@ -20,14 +20,7 @@ Parameters:
   DBUsername:
     Description: Username for the RDS database
     Type: String
-    NoEcho: true
     Default: pocadmin
-
-  DBPassword:
-    Description: Password for the RDS database
-    Type: String
-    NoEcho: true
-    Default: dfnoensevd143
 
   DBInstanceClass:
     Description: Instance class for the RDS instance
@@ -51,7 +44,7 @@ Parameters:
 
 Resources:
   DatabaseInstance:
-    Type: "AWS::RDS::DBInstance"
+    Type: AWS::RDS::DBInstance
     Properties:
       DBInstanceIdentifier: !Sub ${ProjectName}-${EnvironmentName}-db
       DBInstanceClass: !Ref DBInstanceClass
@@ -61,7 +54,7 @@ Resources:
       PubliclyAccessible: false
       DBName: !Ref DBName
       MasterUsername: !Ref DBUsername
-      MasterUserPassword: !Ref DBPassword
+      MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref DatabaseSecret, ':SecretString:password}}' ]]
       DBSubnetGroupName: !Ref DatabaseSubnetGroup
       VPCSecurityGroups:
         - !Ref DatabaseSecurityGroup
@@ -78,10 +71,8 @@ Resources:
     Properties:
       Description: "This is the secret for my RDS instance"
       GenerateSecretString:
-        SecretStringTemplate: '{"username": "admin"}'
         GenerateStringKey: "password"
         PasswordLength: 16
-        ExcludeCharacters: '"@/\'
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName}-${EnvironmentName}-db-secret
@@ -90,8 +81,15 @@ Resources:
         - Key: Environment
           Value: !Ref EnvironmentName
 
+  DatabaseSecretDatabaseInstanceAttachment:
+    Type: AWS::SecretsManager::SecretTargetAttachment
+    Properties:
+      SecretId: !Ref DatabaseSecret
+      TargetId: !Ref DatabaseInstance
+      TargetType: AWS::RDS::DBInstance
+
   DatabaseSubnetGroup:
-    Type: "AWS::RDS::DBSubnetGroup"
+    Type: AWS::RDS::DBSubnetGroup
     Properties:
       DBSubnetGroupName: !Sub ${ProjectName}-${EnvironmentName}-database-subnet-group
       DBSubnetGroupDescription: "Subnet group for Database private subnets"
@@ -107,7 +105,7 @@ Resources:
           Value: !Ref EnvironmentName
 
   DatabaseSecurityGroup:
-    Type: "AWS::EC2::SecurityGroup"
+    Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: "Security group for RDS database"
       VpcId:
@@ -129,7 +127,7 @@ Resources:
           Value: !Ref EnvironmentName
 
   BastionHostInstance:
-    Type: "AWS::EC2::Instance"
+    Type: AWS::EC2::Instance
     Properties:
       ImageId: !Ref BastionHostAMI
       InstanceType: !Ref BastionHostInstanceClass
@@ -151,7 +149,7 @@ Resources:
           Value: !Ref EnvironmentName
 
   BastionHostSecurityGroup:
-    Type: "AWS::EC2::SecurityGroup"
+    Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: "Security group for Bastion host"
       VpcId:
