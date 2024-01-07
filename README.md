@@ -5,3 +5,13 @@ This repository serves as a comprehensive Infrastructure as Code (IaC) solution 
 ## Infrastruture Diagram
 
 ![Infrastructure Diagram](https://github.com/krishanshamod/ecs-poc-iac/blob/main/assets/infrastructure_diagram.png?raw=true)
+
+### Obtaining Bastion Host Private Key
+
+To retrieve the Bastion host private key securely, use the following command:
+
+```bash
+aws ssm get-parameter --name /ec2/keypair/<key-pair-id> --with-decryption --query Parameter.Value --output text > bastion-host-key.pem
+```
+
+Replace `<key-pair-id>` with the actual ID of your key pair. This command uses AWS Systems Manager (SSM) to securely fetch the private key parameter and save it locally as bastion-host-key.pem. Ensure that you have the AWS CLI configured with the necessary permissions.
