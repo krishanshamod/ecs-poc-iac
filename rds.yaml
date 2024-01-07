@@ -21,7 +21,7 @@ Parameters:
     Description: Username for the RDS database
     Type: String
     NoEcho: true
-    Default: admin
+    Default: pocadmin
 
   DBPassword:
     Description: Password for the RDS database
@@ -159,6 +159,8 @@ Resources:
     Type: AWS::EC2::KeyPair
     Properties:
       KeyName: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-key-pair
+      KeyType: rsa
+      KeyFormat: pem
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-key-pair
