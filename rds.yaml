@@ -13,12 +13,12 @@ Parameters:
     Default: dev
 
   DBName:
-    Description: Name of the RDS database
+    Description: Name of the RDS database (Cannot update it after creation)
     Type: String
     Default: ecspoc
 
   DBUsername:
-    Description: Username for the RDS database
+    Description: Username for the RDS database (Cannot be 'admin' and cannot update it after creation)
     Type: String
     Default: pocadmin
 
@@ -72,6 +72,7 @@ Resources:
       Name: !Sub ${ProjectName}-${EnvironmentName}-db-secret
       Description: "This is the secret for my RDS instance"
       GenerateSecretString:
+        SecretStringTemplate: !Sub '{"username": "${DBUsername}"}'
         GenerateStringKey: "password"
         PasswordLength: 16
       Tags:
