@@ -158,12 +158,12 @@ Resources:
   BastionHostKeyPair:
     Type: AWS::EC2::KeyPair
     Properties:
-      KeyName: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-key-pair
+      KeyName: !Sub ${ProjectName}-${EnvironmentName}-bastion-kp
       KeyType: rsa
       KeyFormat: pem
       Tags:
         - Key: Name
-          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-key-pair
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-kp
         - Key: Project
           Value: !Ref ProjectName
         - Key: Environment
