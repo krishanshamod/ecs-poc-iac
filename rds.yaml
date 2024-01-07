@@ -73,6 +73,23 @@ Resources:
         - Key: Environment
           Value: !Ref EnvironmentName
 
+  DatabaseSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: "This is the secret for my RDS instance"
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "admin"}'
+        GenerateStringKey: "password"
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-db-secret
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
   DatabaseSubnetGroup:
     Type: "AWS::RDS::DBSubnetGroup"
     Properties:
