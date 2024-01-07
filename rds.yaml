@@ -1,2 +1,198 @@
 Description: >
-  This template deploys a private RDS instance with a bastion host to access it.
+  This template deploys a private RDS instance with a bastion host.
+
+Parameters:
+  ProjectName:
+    Description: The name of the project
+    Type: String
+    Default: ecs-poc
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+    Default: dev
+
+  DBName:
+    Description: Name of the RDS database
+    Type: String
+    Default: ecs-poc
+
+  DBUsername:
+    Description: Username for the RDS database
+    Type: String
+    NoEcho: true
+
+  DBPassword:
+    Description: Password for the RDS database
+    Type: String
+    NoEcho: true
+
+  DBInstanceClass:
+    Description: Instance class for the RDS instance
+    Type: String
+    Default: db.t3.micro
+
+  DBAllocatedStorage:
+    Description: Amount of storage in gigabytes
+    Type: Number
+    Default: 20
+
+  BastionHostAMI:
+    Description: AMI to use for the bastion host
+    Type: String
+    Default: ami-079db87dc4c10ac91
+
+  BastionHostInstanceClass:
+    Description: Instance class for the bastion host
+    Type: String
+    Default: t3.micro
+
+Resources:
+  DatabaseInstance:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      DBInstanceIdentifier: !Sub ${ProjectName}-${EnvironmentName}-db
+      DBInstanceClass: !Ref DBInstanceClass
+      AllocatedStorage: !Ref DBAllocatedStorage
+      Engine: postgres
+      MultiAZ: false
+      PubliclyAccessible: false
+      DBName: !Ref DBName
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      VPCSecurityGroups:
+        - !Ref DatabaseSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-db
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  DatabaseSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupName: !Sub ${ProjectName}-${EnvironmentName}-database-subnet-group
+      DBSubnetGroupDescription: "Subnet group for Database private subnets"
+      SubnetIds:
+        - Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-database-subnet-1"
+        - Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-database-subnet-2"
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-database-subnet-group
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  DatabaseSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Security group for RDS database"
+      VpcId:
+        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-database-sg
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  BastionHostInstance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: !Ref BastionHostAMI
+      InstanceType: !Ref BastionHostInstanceClass
+      KeyName: !Ref BastionHostKeyPair
+      SubnetId:
+        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-public-subnet-1"
+      SecurityGroupIds:
+        - Ref: BastionHostSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 20
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  BastionHostSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: "Security group for Bastion host"
+      VpcId:
+        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-sg
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  BastionHostKeyPair:
+    Type: "AWS::EC2::KeyPair"
+    Properties:
+      KeyName: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-key-pair
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-key-pair
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  BastionHostElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref BastionHostInstance
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-eip
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+Outputs:
+  BastionHostElasticIP:
+    Description: Public IP address of the Bastion host
+    Value: !Ref BastionHostElasticIP
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-eip
+
+  BastionHostKeyPairID:
+    Description: KeyPair ID of the Bastion host
+    Value: !GetAtt BastionHostKeyPair.KeyPairId
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-key-pair-id
+
+  DatabaseEndpoint:
+    Description: Endpoint of the RDS database
+    Value: !GetAtt DatabaseInstance.Endpoint.Address
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-db-endpoint
