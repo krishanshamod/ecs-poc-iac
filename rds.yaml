@@ -15,7 +15,7 @@ Parameters:
   DBName:
     Description: Name of the RDS database
     Type: String
-    Default: ecs-poc
+    Default: ecspoc
 
   DBUsername:
     Description: Username for the RDS database
@@ -156,7 +156,7 @@ Resources:
           Value: !Ref EnvironmentName
 
   BastionHostKeyPair:
-    Type: "AWS::EC2::KeyPair"
+    Type: AWS::EC2::KeyPair
     Properties:
       KeyName: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-key-pair
       Tags:
