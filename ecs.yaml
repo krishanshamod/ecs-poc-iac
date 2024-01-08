@@ -222,7 +222,6 @@ Resources:
     Properties:
       ListenerArn: !Ref ListenerHTTPS
       Priority: 100
-      # add host header condition here
       Conditions:
         - Field: host-header
           HostHeaderConfig:
