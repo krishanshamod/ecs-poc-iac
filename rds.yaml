@@ -84,12 +84,12 @@ Resources:
   #       - Key: Environment
   #         Value: !Ref EnvironmentName
 
-  DatabaseSecretDatabaseInstanceAttachment:
-    Type: AWS::SecretsManager::SecretTargetAttachment
-    Properties:
-      SecretId: !Ref DatabaseSecret
-      TargetId: !Ref DatabaseInstance
-      TargetType: AWS::RDS::DBInstance
+  # DatabaseSecretDatabaseInstanceAttachment:
+  #   Type: AWS::SecretsManager::SecretTargetAttachment
+  #   Properties:
+  #     SecretId: !Ref DatabaseSecret
+  #     TargetId: !Ref DatabaseInstance
+  #     TargetType: AWS::RDS::DBInstance
 
   DatabaseSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
