@@ -29,7 +29,7 @@ Resources:
           Value: !Ref ProjectName
 
 Outputs:
-  ECRURI:
+  ECRRepositoryURI:
     Description: The URL of the ECR repository
     Value: !GetAtt ECRRepository.RepositoryUri
     Export:
