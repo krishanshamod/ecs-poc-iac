@@ -54,7 +54,8 @@ Resources:
       PubliclyAccessible: false
       DBName: !Ref DBName
       MasterUsername: !Ref DBUsername
-      MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref DatabaseSecret, ':SecretString:password}}' ]]
+      ManageMasterUserPassword: true
+      # MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref DatabaseSecret, ':SecretString:password}}' ]]
       DBSubnetGroupName: !Ref DatabaseSubnetGroup
       VPCSecurityGroups:
         - !Ref DatabaseSecurityGroup
@@ -66,22 +67,22 @@ Resources:
         - Key: Environment
           Value: !Ref EnvironmentName
 
-  DatabaseSecret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Name: !Sub ${ProjectName}-${EnvironmentName}-db-secret
-      Description: "This is the secret for my RDS instance"
-      GenerateSecretString:
-        SecretStringTemplate: !Sub '{"username": "${DBUsername}"}'
-        GenerateStringKey: "password"
-        PasswordLength: 16
-      Tags:
-        - Key: Name
-          Value: !Sub ${ProjectName}-${EnvironmentName}-db-secret
-        - Key: Project
-          Value: !Ref ProjectName
-        - Key: Environment
-          Value: !Ref EnvironmentName
+  # DatabaseSecret:
+  #   Type: AWS::SecretsManager::Secret
+  #   Properties:
+  #     Name: !Sub ${ProjectName}-${EnvironmentName}-db-secret
+  #     Description: "This is the secret for my RDS instance"
+  #     GenerateSecretString:
+  #       SecretStringTemplate: !Sub '{"username": "${DBUsername}"}'
+  #       GenerateStringKey: "password"
+  #       PasswordLength: 16
+  #     Tags:
+  #       - Key: Name
+  #         Value: !Sub ${ProjectName}-${EnvironmentName}-db-secret
+  #       - Key: Project
+  #         Value: !Ref ProjectName
+  #       - Key: Environment
+  #         Value: !Ref EnvironmentName
 
   DatabaseSecretDatabaseInstanceAttachment:
     Type: AWS::SecretsManager::SecretTargetAttachment
