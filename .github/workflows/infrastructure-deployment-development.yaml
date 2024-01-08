@@ -68,38 +68,6 @@ jobs:
           no-fail-on-empty-changeset: "1"
           disable-rollback: "1"
           capabilities: CAPABILITY_NAMED_IAM
-          parameter-overrides: |
-            EnvironmentName=dev
-
-      # - name: Check if ECR Cloudfomation Stack exists
-      #   id: check-ecr-stack
-      #   continue-on-error: true
-      #   run: |
-      #     output=$(aws cloudformation describe-stacks \
-      #       --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
-      #       --region ${{ secrets.AWS_Region }} \
-      #       --query 'Stacks[].StackName' \
-      #       --output text)
-      #     echo "::set-output name=stdout::$output"
-
-      # - name: Show ECR Cloudformation Stack changes
-      #   if: steps.check-ecr-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-ecr-stack
-      #   run: |
-      #     aws cloudformation create-change-set \
-      #       --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
-      #       --change-set-name ${{ env.PROJECT_NAME }}-ecr-stack-changes \
-      #       --template-body file://ecr.yaml \
-      #       --on-stack-failure DO_NOTHING \
-      #       --capabilities CAPABILITY_NAMED_IAM \
-      #       --region ${{ secrets.AWS_Region }}
-      #     aws cloudformation describe-change-set \
-      #       --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
-      #       --change-set-name ${{ env.PROJECT_NAME }}-ecr-stack-changes \
-      #       --region ${{ secrets.AWS_Region }}
-      #     aws cloudformation delete-change-set \
-      #       --stack-name ${{ env.PROJECT_NAME }}-ecr-stack \
-      #       --change-set-name ${{ env.PROJECT_NAME }}-ecr-stack-changes \
-      #       --region ${{ secrets.AWS_Region }}
 
       - name: Deploy ECR Cloudformation Stack
         if: github.event.pull_request.merged == true || github.event_name == 'push'
@@ -121,36 +89,6 @@ jobs:
           disable-rollback: "1"
           capabilities: CAPABILITY_NAMED_IAM
 
-      # - name: Check if ECS Cloudfomation Stack exists
-      #   id: check-ecs-stack
-      #   continue-on-error: true
-      #   run: |
-      #     output=$(aws cloudformation describe-stacks \
-      #       --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
-      #       --region ${{ secrets.AWS_Region }} \
-      #       --query 'Stacks[].StackName' \
-      #       --output text)
-      #     echo "::set-output name=stdout::$output"
-
-      # - name: Show ECS Cloudformation Stack changes
-      #   if: steps.check-ecs-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-ecs-stack
-      #   run: |
-      #     aws cloudformation create-change-set \
-      #       --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
-      #       --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
-      #       --template-body file://ecs.yaml \
-      #       --on-stack-failure DO_NOTHING \
-      #       --capabilities CAPABILITY_NAMED_IAM \
-      #       --region ${{ secrets.AWS_Region }}
-      #     aws cloudformation describe-change-set \
-      #       --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
-      #       --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
-      #       --region ${{ secrets.AWS_Region }}
-      #     aws cloudformation delete-change-set \
-      #       --stack-name ${{ env.PROJECT_NAME }}-ecs-stack \
-      #       --change-set-name ${{ env.PROJECT_NAME }}-ecs-stack-changes \
-      #       --region ${{ secrets.AWS_Region }}
-
       - name: Deploy RDS Cloudformation Stack
         if: github.event.pull_request.merged == true || github.event_name == 'push'
         uses: aws-actions/aws-cloudformation-github-deploy@v1
@@ -170,3 +108,5 @@ jobs:
           no-fail-on-empty-changeset: "1"
           disable-rollback: "1"
           capabilities: CAPABILITY_NAMED_IAM
+          parameter-overrides: |
+            EnvironmentName=dev
