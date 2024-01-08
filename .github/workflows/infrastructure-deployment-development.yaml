@@ -1,9 +1,6 @@
 name: Infrastructure Deployment Workflow - Development
 
 on:
-  # pull_request:
-  #   branches:
-  #     - main
   push:
     branches:
       - main
@@ -11,6 +8,7 @@ on:
 jobs:
   deploy-infrastructure:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: development
     permissions:
       id-token: write
@@ -28,36 +26,6 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: "GitHub_to_AWS_via_FederatedOIDC"
           aws-region: ${{ secrets.AWS_Region }}
-
-      # - name: Check if VPC Cloudfomation Stack exists
-      #   id: check-vpc-stack
-      #   continue-on-error: true
-      #   run: |
-      #     aws cloudformation describe-stacks \
-      #       --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
-      #       --region ${{ secrets.AWS_Region }} \
-      #       --query 'Stacks[].StackName' \
-      #       --output text
-
-      # - name: Show VPC Cloudformation Stack changes
-      #   if: steps.check-vpc-stack.outputs.stdout == ${{ env.PROJECT_NAME }}-vpc-stack
-      #   run: |
-      #     aws cloudformation create-change-set \
-      #       --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
-      #       --change-set-name ${{ env.PROJECT_NAME }}-vpc-stack-changes \
-      #       --template-body file://vpc.yaml \
-      #       --on-stack-failure DO_NOTHING \
-      #       --capabilities CAPABILITY_NAMED_IAM \
-      #       --region ${{ secrets.AWS_Region }} \
-      #       --parameters ParameterKey=EnvironmentName,ParameterValue=dev
-      #     aws cloudformation describe-change-set \
-      #       --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
-      #       --change-set-name ${{ env.PROJECT_NAME }}-vpc-stack-changes \
-      #       --region ${{ secrets.AWS_Region }}
-      #     aws cloudformation delete-change-set \
-      #       --stack-name ${{ env.PROJECT_NAME }}-vpc-stack \
-      #       --change-set-name ${{ env.PROJECT_NAME }}-vpc-stack-changes \
-      #       --region ${{ secrets.AWS_Region }}
 
       - name: Deploy VPC Cloudformation Stack
         if: github.event.pull_request.merged == true || github.event_name == 'push'
