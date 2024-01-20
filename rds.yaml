@@ -203,8 +203,6 @@ Resources:
   BastionHostConnectEndpoint:
     Type: AWS::EC2::InstanceConnectEndpoint
     Properties:
-      VpcId:
-        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
       SubnetId: 
         Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-public-subnet-1"
       SecurityGroupIds:
