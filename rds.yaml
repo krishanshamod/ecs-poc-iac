@@ -161,7 +161,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 0.0.0.0/0
+          SourceSecurityGroupId: !Ref BastionHostConnectEndpointSecurityGroup
       SecurityGroupEgress:
         - IpProtocol: -1
           CidrIp: 0.0.0.0/0
@@ -246,6 +246,12 @@ Outputs:
     Value: !GetAtt BastionHostKeyPair.KeyPairId
     Export:
       Name: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-key-pair-id
+
+  BastionHostInstanceID:
+    Description: Instance ID of the Bastion host
+    Value: !Ref BastionHostInstance
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-instance-id
 
   DatabaseEndpoint:
     Description: Endpoint of the RDS database
