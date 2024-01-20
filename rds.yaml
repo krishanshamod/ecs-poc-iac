@@ -131,6 +131,8 @@ Resources:
 
   BastionHostInstance:
     Type: AWS::EC2::Instance
+    DependsOn: 
+      - BastionHostConnectEndpoint
     Properties:
       ImageId: !Ref BastionHostAMI
       InstanceType: !Ref BastionHostInstanceClass
