@@ -75,6 +75,7 @@ Resources:
         SecretStringTemplate: !Sub '{"username": "${DBUsername}"}'
         GenerateStringKey: "password"
         PasswordLength: 16
+        ExcludePunctuation: true
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName}-${EnvironmentName}-db-secret
