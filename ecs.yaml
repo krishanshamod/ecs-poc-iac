@@ -35,12 +35,12 @@ Parameters:
   DomainName:
     Description: Domain name
     Type: String
-    Default: ecspoc.krishanshamod.live
+    Default: poc.krishanshamod.com
 
   CertificateARN:
     Description: Certificate ARN
     Type: String
-    Default: arn:aws:acm:us-east-1:499249761013:certificate/5707e188-fc34-4341-82fe-a723c074ad66
+    Default: arn:aws:acm:us-east-1:499249761013:certificate/c5385dc2-62c6-4b0b-be96-6c1eb69cbfad
 
 Resources:
   Cluster:
