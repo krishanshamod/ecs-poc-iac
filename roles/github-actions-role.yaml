@@ -1,0 +1,109 @@
+Description: >
+  This template creates an IAM role which is used in GitHub Actions in this project.
+
+Parameters:
+  ProjectName:
+    Description: The name of the project
+    Type: String
+    Default: ecs-poc
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+    Default: dev
+
+  GitHubUsername:
+    Description: The GitHub username that will be used to create the AWS role trust relationship
+    Type: String
+    Default: krishanshamod
+
+  AWSAccountID:
+    Description: The AWS account ID that will be used to create the AWS role trust relationship
+    Type: String
+    Default: 499249761013
+
+Resources:
+  IAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ProjectName}-${EnvironmentName}-iac-role
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
+        - arn:aws:iam::aws:policy/AmazonRDSFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonVPCFullAccess
+        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        - arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess
+      Policies:
+        - PolicyName: EC2CreateKeyPair
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ec2:ImportKeyPair"
+                  - "ec2:DeleteKeyPair"
+                  - "ec2:CreateKeyPair"
+                  - "ssm:PutParameter"
+                  - "ssm:DeleteParameter"
+                Resource: "*"
+        - PolicyName: IAMCreateRole
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "iam:CreateRole"
+                  - "iam:GetRole"
+                  - "iam:AttachRolePolicy"
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "iam:PutRolePolicy"
+                  - "iam:DeleteRolePolicy"
+                Resource: "*"
+        - PolicyName: SecretManagerCreateSecret
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "secretsmanager:CreateSecret"
+                  - "secretsmanager:GetRandomPassword"
+                  - "secretsmanager:TagResource"
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - "secretsmanager:GetSecretValue"
+                  - "secretsmanager:PutSecretValue"
+                  - "secretsmanager:DeleteSecret"
+                Resource: "*"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: "sts:AssumeRoleWithWebIdentity"
+            Principal:
+              Federated: !Sub "arn:aws:iam::${AWSAccountID}:oidc-provider/token.actions.githubusercontent.com"
+            Condition:
+              StringEquals:
+                "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+              StringLike:
+                "token.actions.githubusercontent.com:sub":
+                  Fn::Sub:
+                    - "repo:${GitHubUsername}/*"
+                    - GitHubUsername: !Ref GitHubUsername
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-iac-role
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+Outputs:
+  IAMRoleArn:
+    Description: The ARN of the IAM role
+    Value: !GetAtt IAMRole.Arn
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-iac-role-arn
