@@ -131,8 +131,6 @@ Resources:
 
   BastionHostInstance:
     Type: AWS::EC2::Instance
-    DependsOn: 
-      - BastionHostConnectEndpoint
     Properties:
       ImageId: !Ref BastionHostAMI
       InstanceType: !Ref BastionHostInstanceClass
@@ -223,11 +221,6 @@ Resources:
       GroupDescription: "Security group for Bastion host connect endpoint"
       VpcId:
         Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          SourceSecurityGroupId: !Ref BastionHostSecurityGroup
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-endpoint-sg
@@ -235,6 +228,17 @@ Resources:
           Value: !Ref ProjectName
         - Key: Environment
           Value: !Ref EnvironmentName
+
+  BastionHostConnectEndpointSecurityGroupEgress:
+    Type: AWS::EC2::SecurityGroupEgress
+    DependsOn:
+      - BastionHostSecurityGroup
+    Properties:
+      GroupId: !Ref BastionHostConnectEndpointSecurityGroup
+      IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      SourceSecurityGroupId: !Ref BastionHostSecurityGroup
 
 Outputs:
   BastionHostElasticIP:
