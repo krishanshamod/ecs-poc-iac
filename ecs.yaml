@@ -91,7 +91,6 @@ Resources:
           #     ValueFrom: !Sub "${AppSecret}:HOST::"
           #   - Name: NODE_ENV
           #     ValueFrom: !Sub "${AppSecret}:NODE_ENV::"
-          #   - Name: NUXT_HOST
           LogConfiguration:
             LogDriver: awslogs
             Options:
