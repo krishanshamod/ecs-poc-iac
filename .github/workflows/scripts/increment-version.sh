@@ -11,7 +11,7 @@ do
 done
 
 # get highest tag number, and add 1.0.0 if doesn't exist
-CURRENT_VERSION=`git describe --abbrev=0 --always --tags 2>/dev/null`
+CURRENT_VERSION=`git describe --abbrev=0 --tags 2>/dev/null`
 
 if [[ $CURRENT_VERSION == '' ]]
 then
