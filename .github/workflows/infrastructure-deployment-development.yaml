@@ -19,15 +19,6 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3
-        with:
-          # Token and fetch-depth are used in increase patch version step
-          token: ${{ secrets.PIPELINE_PAT }}
-          fetch-depth: true
-
-      - name: Increase Patch Version
-        run: |
-          chmod +x ./.github/workflows/scripts/increment-version.sh
-          ./.github/workflows/scripts/increment-version.sh -v patch
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
