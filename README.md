@@ -21,6 +21,12 @@ Replace `<key-pair-id>` with the actual ID of your key pair. This command uses A
 ### Prerequisites
 
 1. Ensure that you have AWS CLI installed on your local machine, and the version is higher than 2.12.0.
+2. Ensure that you have configured the AWS CLI with the user or role that have following permissions:
+   - `ssm:GetParameter`
+   - `ec2:DescribeInstances`
+   - `ec2:DescribeInstanceConnectEndpoints`
+   - `ec2-instance-connect:OpenTunnel`
+3. Ensure that you have the Bastion host private key file (bastion-host-key.pem) in the current directory.
 
 ### SSH Port Forwarding
 
