@@ -23,8 +23,8 @@ jobs:
       - name: Increment patch version
         run: |
           tree .
-          chmod +x ./github/workflows/scripts/increment-version.sh
-          ./github/workflows/scripts/increment-version.sh -v patch
+          chmod +x ./.github/workflows/scripts/increment-version.sh
+          ./.github/workflows/scripts/increment-version.sh -v patch
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
