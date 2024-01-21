@@ -20,7 +20,7 @@ Parameters:
   Image:
     Description: Docker image
     Type: String
-    Default: 499249761013.dkr.ecr.us-east-1.amazonaws.com/ecs-poc:f8402b60f9eaa79c5d88740f8d70272af90f7074
+    Default: 499249761013.dkr.ecr.us-east-1.amazonaws.com/ecs-poc:c1e0f236a230b0489ffdd5f90d92b5a55f0a0704
 
   ContainerPort:
     Description: Container port
