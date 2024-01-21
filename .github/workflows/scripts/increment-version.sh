@@ -41,17 +41,17 @@ fi
 
 # create new tag
 NEW_TAG="$VNUM1.$VNUM2.$VNUM3"
-echo "($VERSION) updating $CURRENT_VERSION to $NEW_TAG"
+echo "Updating $CURRENT_VERSION to $NEW_TAG"
 
 # get current hash and see if it already has a tag
 GIT_COMMIT=`git rev-parse HEAD`
 NEEDS_TAG=`git describe --contains $GIT_COMMIT 2>/dev/null`
 
-# tag and push if no tag already)
+# tag and push if no tag already
 if [ -z "$NEEDS_TAG" ]; then
-  echo "Tagged with $NEW_TAG"
-  # git push --tags
-  # git push
+  echo "New Version: $NEW_TAG"
+  git push --tags
+  git push
 else
   echo "Already a tag on this commit"
 fi

@@ -20,7 +20,9 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v3
         with:
-          fetch-depth: true
+          # Token and fetch-tags are used in increase patch version step
+          token: ${{ secrets.PIPELINE_PAT }}
+          fetch-tags: true
 
       - name: Increase Patch Version
         run: |
