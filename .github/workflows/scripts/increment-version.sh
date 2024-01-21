@@ -11,10 +11,7 @@ do
 done
 
 # get highest tag number, and add 1.0.0 if doesn't exist
-CURRENT_VERSION=`git describe --abbrev=0 --tags 2>/dev/null`
-
-echo "Latest tag"
-git describe --abbrev=0 --tags
+CURRENT_VERSION=`git describe --abbrev=0 --always --tags 2>/dev/null`
 
 if [[ $CURRENT_VERSION == '' ]]
 then
@@ -53,8 +50,8 @@ NEEDS_TAG=`git describe --contains $GIT_COMMIT 2>/dev/null`
 # tag and push if no tag already)
 if [ -z "$NEEDS_TAG" ]; then
   echo "Tagged with $NEW_TAG"
-  git push --tags
-  git push
+  # git push --tags
+  # git push
 else
   echo "Already a tag on this commit"
 fi
