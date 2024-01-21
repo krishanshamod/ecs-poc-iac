@@ -10,6 +10,16 @@ do
   esac
 done
 
+# get current hash and see if it already has a tag
+GIT_COMMIT=`git rev-parse HEAD`
+NEEDS_TAG=`git describe --contains $GIT_COMMIT 2>/dev/null`
+
+# exit if tag already exists
+if [ -n "$NEEDS_TAG" ]; then
+  echo "Already a tag on this commit"
+  exit 0
+fi
+
 # get highest tag number, and add 1.0.0 if doesn't exist
 CURRENT_VERSION=`git describe --abbrev=0 --tags 2>/dev/null`
 
@@ -39,21 +49,10 @@ else
   exit 1
 fi
 
-# create new tag
+# create and push new tag
 NEW_TAG="$VNUM1.$VNUM2.$VNUM3"
-echo "Updating $CURRENT_VERSION to $NEW_TAG"
-
-# get current hash and see if it already has a tag
-GIT_COMMIT=`git rev-parse HEAD`
-NEEDS_TAG=`git describe --contains $GIT_COMMIT 2>/dev/null`
-
-# tag and push if no tag already
-if [ -z "$NEEDS_TAG" ]; then
-  echo "New Version: $NEW_TAG"
-  git tag $NEW_TAG
-  git push --tags
-else
-  echo "Already a tag on this commit"
-fi
+echo "New Version: $NEW_TAG"
+git tag $NEW_TAG
+git push --tags
 
 exit 0
