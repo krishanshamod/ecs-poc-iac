@@ -49,6 +49,18 @@ Resources:
                   - "ssm:PutParameter"
                   - "ssm:DeleteParameter"
                 Resource: "*"
+        - PolicyName: EC2CreateConnectEndpoint
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ec2:CreateInstanceConnectEndpoint"
+                  - "ec2:DeleteInstanceConnectEndpoint"
+                  - "ec2:DescribeInstanceConnectEndpoints"
+                  - "ec2:CreateNetworkInterface"
+                  - "ec2:CreateTags"
+                  - "iam:CreateServiceLinkedRole"
+                Resource: "*"
         - PolicyName: IAMCreateRole
           PolicyDocument:
             Statement:
