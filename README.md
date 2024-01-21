@@ -6,7 +6,7 @@ This repository serves as a comprehensive Infrastructure as Code (IaC) solution 
 
 ![Infrastructure Diagram](https://github.com/krishanshamod/ecs-poc-iac/blob/main/assets/infrastructure_diagram.png?raw=true)
 
-### Obtaining Bastion Host Private Key
+## Obtaining Bastion Host Private Key
 
 To retrieve the Bastion host private key securely, use the following command:
 
@@ -16,17 +16,23 @@ aws ssm get-parameter --name /ec2/keypair/<key-pair-id> --with-decryption --quer
 
 Replace `<key-pair-id>` with the actual ID of your key pair. This command uses AWS Systems Manager (SSM) to securely fetch the private key parameter and save it locally as bastion-host-key.pem. Ensure that you have the AWS CLI configured with the necessary permissions.
 
-### Accessing the Database Locally
+## Accessing the Database Locally
+
+### Prerequisites
+
+1. Ensure that you have AWS CLI installed on your local machine, and the version is higher than 2.12.0.
+
+### SSH Port Forwarding
 
 To access the database securely from your local machine, you can use the following SSH port forwarding command:
 
 ```bash
-ssh -N -L 5432:<database-endpoint>:5432 -p 22 -i bastion-host-key.pem ec2-user@<bastion-host-ip>
+ssh -N -L 5432:<database-endpoint>:5432 -p 22 -i bastion-host-key.pem -o ProxyCommand='aws ec2-instance-connect open-tunnel --instance-id %h' ec2-user@<instance-id>
 ```
 
 Replace the placeholders:
 
 - `database-endpoint`: Replace with the actual AWS RDS endpoint.
-- `bastion-host-ip`: Replace with the public IP address of your Bastion host.
+- `instance-id`: Replace with the instance ID of your Bastion host.
 
-This command establishes an SSH tunnel, forwarding the database port from the AWS RDS endpoint through the Bastion host to your local machine. After running this command, you can connect to the database on your local machine as if it were running on `localhost`.
+This command establishes an SSH tunnel using EC2 instance connect endpoint and forwarding the database port from the AWS RDS endpoint through the Bastion host to your local machine. After running this command, you can connect to the database on your local machine as if it were running on `localhost`.
