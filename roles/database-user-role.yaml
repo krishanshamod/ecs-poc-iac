@@ -1,0 +1,62 @@
+Description: >
+  This template creates an IAM role which is assumed by the users who will need to access the database locally.
+
+Parameters:
+  ProjectName:
+    Description: The name of the project
+    Type: String
+    Default: ecs-poc
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+    Default: dev
+
+  AWSUserARN:
+    Description: The AWS user or role ARN that will be used to create the AWS role trust relationship
+    Type: String
+    Default: arn:aws:iam::499249761013:user/pocuser
+
+Resources:
+  IAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ProjectName}-${EnvironmentName}-db-user-role
+      Policies:
+        - PolicyName: EC2GetKeyPair
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ssm:GetParameter"
+                Resource: "*"
+        - PolicyName: EC2ConnectEndpoint
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ec2:DescribeInstances"
+                  - "ec2:DescribeInstanceConnectEndpoints"
+                  - "ec2-instance-connect:OpenTunnel"
+                Resource: "*"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: "sts:AssumeRole"
+            Principal:
+              AWS: !Ref AWSUserARN
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-db-user-role
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+Outputs:
+  IAMRoleArn:
+    Description: The ARN of the IAM role
+    Value: !GetAtt IAMRole.Arn
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-db-user-role-arn
