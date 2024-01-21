@@ -50,6 +50,7 @@ NEEDS_TAG=`git describe --contains $GIT_COMMIT 2>/dev/null`
 # tag and push if no tag already
 if [ -z "$NEEDS_TAG" ]; then
   echo "New Version: $NEW_TAG"
+  git tag $NEW_TAG
   git push --tags
   git push
 else
