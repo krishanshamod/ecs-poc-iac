@@ -1,9 +1,9 @@
 name: Infrastructure Deployment Workflow - Development
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
 concurrency:
   group: ${{ github.workflow }}

@@ -69,6 +69,8 @@ Resources:
                   - "iam:CreateRole"
                   - "iam:GetRole"
                   - "iam:AttachRolePolicy"
+                  - "iam:TagRole"
+                  - "iam:GetRolePolicy"
                 Resource: "*"
               - Effect: Allow
                 Action:
