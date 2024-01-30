@@ -5,6 +5,8 @@ name: Infrastructure Deployment Workflow - Development
 #     branches:
 #       - main
 
+on: workflow_dispatch
+
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
