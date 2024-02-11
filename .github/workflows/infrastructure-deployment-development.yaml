@@ -1,11 +1,11 @@
 name: Infrastructure Deployment Workflow - Development
 
-# on:
-#   push:
-#     branches:
-#       - main
+on:
+  push:
+    branches:
+      - main
 
-on: workflow_dispatch
+# on: workflow_dispatch
 
 concurrency:
   group: ${{ github.workflow }}
