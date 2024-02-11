@@ -60,7 +60,7 @@ Resources:
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
-    DependsOn: 
+    DependsOn:
       - LogGroup
       - AppSecret
     Properties:
@@ -108,7 +108,7 @@ Resources:
           Value: !Ref ServiceName
         - Key: Cluster
           Value: !Ref Cluster
-  
+
   AppSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
@@ -176,7 +176,7 @@ Resources:
       DeploymentConfiguration:
         MinimumHealthyPercent: 100
         MaximumPercent: 200
-      DesiredCount: 2
+      DesiredCount: 1
       HealthCheckGracePeriodSeconds: 30
       LaunchType: FARGATE
       NetworkConfiguration:
