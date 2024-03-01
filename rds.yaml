@@ -32,6 +32,11 @@ Parameters:
     Type: Number
     Default: 20
 
+  DBMaxAllocatedStorage:
+    Description: The upper limit to which RDS can automatically scale the storage
+    Type: Number
+    Default: 100
+
   DBMultiAZ:
     Description: Create a multi-AZ RDS instance
     Type: String
@@ -69,6 +74,7 @@ Resources:
       DBInstanceIdentifier: !Sub ${ProjectName}-${EnvironmentName}-db
       DBInstanceClass: !Ref DBInstanceClass
       AllocatedStorage: !Ref DBAllocatedStorage
+      MaxAllocatedStorage: !Ref DBMaxAllocatedStorage
       Engine: postgres
       MultiAZ: !Ref DBMultiAZ
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
