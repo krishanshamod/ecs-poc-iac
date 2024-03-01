@@ -32,6 +32,11 @@ Parameters:
     Type: Number
     Default: 20
 
+  DBMultiAZ:
+    Description: Create a multi-AZ RDS instance
+    Type: String
+    Default: false
+
   BastionHostAMI:
     Description: AMI to use for the bastion host
     Type: String
@@ -50,7 +55,7 @@ Resources:
       DBInstanceClass: !Ref DBInstanceClass
       AllocatedStorage: !Ref DBAllocatedStorage
       Engine: postgres
-      MultiAZ: false
+      MultiAZ: !Ref DBMultiAZ
       PubliclyAccessible: false
       DBName: !Ref DBName
       MasterUsername: !Ref DBUsername
