@@ -42,6 +42,16 @@ Parameters:
     Type: Number
     Default: 7
 
+  DBPreferredBackupWindow:
+    Description: The daily time range during which automated backups are created in UTC
+    Type: String
+    Default: "19:00-20:00"
+
+  DBPreferredMaintenanceWindow:
+    Description: The weekly time range during which system maintenance can occur in UTC
+    Type: String
+    Default: "sat:20:00-sat:21:00"
+
   BastionHostAMI:
     Description: AMI to use for the bastion host
     Type: String
@@ -62,6 +72,8 @@ Resources:
       Engine: postgres
       MultiAZ: !Ref DBMultiAZ
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
+      PreferredBackupWindow: !Ref DBPreferredBackupWindow
+      PreferredMaintenanceWindow: !Ref DBPreferredMaintenanceWindow
       PubliclyAccessible: false
       DBName: !Ref DBName
       MasterUsername: !Ref DBUsername
