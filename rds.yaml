@@ -35,7 +35,12 @@ Parameters:
   DBMultiAZ:
     Description: Create a multi-AZ RDS instance
     Type: String
-    Default: false
+    Default: true
+
+  DBBackupRetentionPeriod:
+    Description: The number of days to retain automated backups
+    Type: Number
+    Default: 0
 
   BastionHostAMI:
     Description: AMI to use for the bastion host
@@ -56,6 +61,7 @@ Resources:
       AllocatedStorage: !Ref DBAllocatedStorage
       Engine: postgres
       MultiAZ: !Ref DBMultiAZ
+      BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
       PubliclyAccessible: false
       DBName: !Ref DBName
       MasterUsername: !Ref DBUsername
