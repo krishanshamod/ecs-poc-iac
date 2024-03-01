@@ -40,7 +40,7 @@ Parameters:
   DBBackupRetentionPeriod:
     Description: The number of days to retain automated backups
     Type: Number
-    Default: 0
+    Default: 7
 
   BastionHostAMI:
     Description: AMI to use for the bastion host
