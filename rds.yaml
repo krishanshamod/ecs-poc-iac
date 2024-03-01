@@ -75,6 +75,7 @@ Resources:
       DBInstanceClass: !Ref DBInstanceClass
       AllocatedStorage: !Ref DBAllocatedStorage
       MaxAllocatedStorage: !Ref DBMaxAllocatedStorage
+      StorageEncrypted: true
       Engine: postgres
       MultiAZ: !Ref DBMultiAZ
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
