@@ -45,7 +45,7 @@ Parameters:
   AutoScalingTargetValue:
     Description: Target CPU utilization for autoscaling
     Type: Number
-    Default: 80
+    Default: 60
 
   DomainName:
     Description: Domain name
@@ -211,7 +211,7 @@ Resources:
       DeploymentConfiguration:
         MinimumHealthyPercent: 100
         MaximumPercent: 200
-      DesiredCount: 1
+      DesiredCount: 2
       HealthCheckGracePeriodSeconds: 30
       LaunchType: FARGATE
       NetworkConfiguration:
