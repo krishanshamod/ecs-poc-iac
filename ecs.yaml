@@ -214,9 +214,14 @@ Resources:
         DeploymentCircuitBreaker:
           Enable: true
           Rollback: true
+      PlacementStrategies:
+        - Field: "attribute:ecs.availability-zone"
+          Type: "spread"
+      DeploymentController:
+        Type: ECS
+      LaunchType: FARGATE
       DesiredCount: 2
       HealthCheckGracePeriodSeconds: 30
-      LaunchType: FARGATE
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: DISABLED
