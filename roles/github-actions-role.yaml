@@ -71,6 +71,7 @@ Resources:
                   - "iam:AttachRolePolicy"
                   - "iam:TagRole"
                   - "iam:GetRolePolicy"
+                  - "iam:PassRole"
                 Resource: "*"
               - Effect: Allow
                 Action:
