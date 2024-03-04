@@ -214,9 +214,6 @@ Resources:
         DeploymentCircuitBreaker:
           Enable: true
           Rollback: true
-      PlacementStrategies:
-        - Field: "attribute:ecs.availability-zone"
-          Type: "spread"
       LaunchType: FARGATE
       DesiredCount: 2
       HealthCheckGracePeriodSeconds: 30
