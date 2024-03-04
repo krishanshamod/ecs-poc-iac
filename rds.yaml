@@ -57,6 +57,16 @@ Parameters:
     Type: String
     Default: "sat:20:00-sat:21:00"
 
+  BastionHostAMI:
+    Description: AMI to use for the bastion host
+    Type: String
+    Default: ami-079db87dc4c10ac91
+
+  BastionHostInstanceClass:
+    Description: Instance class for the bastion host
+    Type: String
+    Default: t3.micro
+
 Resources:
   DatabaseInstance:
     Type: AWS::RDS::DBInstance
@@ -149,7 +159,136 @@ Resources:
         - Key: Environment
           Value: !Ref EnvironmentName
 
+  BastionHostInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref BastionHostAMI
+      InstanceType: !Ref BastionHostInstanceClass
+      KeyName: !Ref BastionHostKeyPair
+      SubnetId:
+        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-public-subnet-1"
+      SecurityGroupIds:
+        - Ref: BastionHostSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 20
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  BastionHostSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Security group for Bastion host"
+      VpcId:
+        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          SourceSecurityGroupId: !Ref BastionHostConnectEndpointSecurityGroup
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-sg
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  BastionHostKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: !Sub ${ProjectName}-${EnvironmentName}-bastion-kp
+      KeyType: rsa
+      KeyFormat: pem
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-kp
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  BastionHostElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref BastionHostInstance
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-eip
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  BastionHostConnectEndpoint:
+    Type: AWS::EC2::InstanceConnectEndpoint
+    Properties:
+      SubnetId: 
+        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-public-subnet-1"
+      SecurityGroupIds:
+        - Ref: BastionHostConnectEndpointSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-endpoint
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  BastionHostConnectEndpointSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Security group for Bastion host connect endpoint"
+      VpcId:
+        Fn::ImportValue: !Sub "${ProjectName}-${EnvironmentName}-vpc"
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-endpoint-sg
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  BastionHostConnectEndpointSecurityGroupEgress:
+    Type: AWS::EC2::SecurityGroupEgress
+    DependsOn:
+      - BastionHostSecurityGroup
+    Properties:
+      GroupId: !Ref BastionHostConnectEndpointSecurityGroup
+      IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      DestinationSecurityGroupId: !Ref BastionHostSecurityGroup
+
 Outputs:
+  BastionHostElasticIP:
+    Description: Public IP address of the Bastion host
+    Value: !Ref BastionHostElasticIP
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-eip
+
+  BastionHostKeyPairID:
+    Description: KeyPair ID of the Bastion host
+    Value: !GetAtt BastionHostKeyPair.KeyPairId
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-key-pair-id
+
+  BastionHostInstanceID:
+    Description: Instance ID of the Bastion host
+    Value: !Ref BastionHostInstance
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-bastion-host-instance-id
+
   DatabaseEndpoint:
     Description: Endpoint of the RDS database
     Value: !GetAtt DatabaseInstance.Endpoint.Address
