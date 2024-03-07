@@ -20,7 +20,7 @@ Parameters:
   Image:
     Description: Docker image
     Type: String
-    Default: 499249761013.dkr.ecr.us-east-1.amazonaws.com/ecs-poc:v1.0.15
+    Default: 499249761013.dkr.ecr.us-east-1.amazonaws.com/ecs-poc:v1.0.14
 
   ContainerPort:
     Description: Container port
@@ -101,11 +101,11 @@ Resources:
           Image: !Ref Image
           PortMappings:
             - ContainerPort: !Ref ContainerPort
-          Secrets:
-            - Name: HOST
-              ValueFrom: !Sub "${AppSecret}:HOST::"
-            - Name: NODE_ENV
-              ValueFrom: !Sub "${AppSecret}:NODE_ENV::"
+          # Secrets:
+          #   - Name: HOST
+          #     ValueFrom: !Sub "${AppSecret}:HOST::"
+          #   - Name: NODE_ENV
+          #     ValueFrom: !Sub "${AppSecret}:NODE_ENV::"
           LogConfiguration:
             LogDriver: awslogs
             Options:
