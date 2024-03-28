@@ -55,7 +55,7 @@ Resources:
 Outputs:
   ExecutionRoleARN:
     Description: "ECS Execution Role with New Relic's license secret access"
-    Value: !Ref ECSTaskExecutionRole
+    Value: !GetAtt ECSTaskExecutionRole.Arn
     Export:
       Name: !Sub ${ProjectName}-${EnvironmentName}-new-relic-task-execution-role-arn
 
