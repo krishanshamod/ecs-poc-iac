@@ -73,6 +73,18 @@ jobs:
       #     disable-rollback: "1"
       #     capabilities: CAPABILITY_NAMED_IAM
 
+      - name: Deply New Relic Integration Cloudformation Stack
+        if: github.event.pull_request.merged == true || github.event_name == 'push'
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ${{ env.PROJECT_NAME }}-new-relic-stack
+          template: "new-relic-integration.yaml"
+          no-fail-on-empty-changeset: "1"
+          disable-rollback: "1"
+          capabilities: CAPABILITY_NAMED_IAM
+          parameter-overrides: |
+            LicenseKey=${{ secrets.NEW_RELIC_LICENSE_KEY }}
+
       - name: Deploy ECS Cloudformation Stack
         if: github.event.pull_request.merged == true || github.event_name == 'push'
         uses: aws-actions/aws-cloudformation-github-deploy@v1

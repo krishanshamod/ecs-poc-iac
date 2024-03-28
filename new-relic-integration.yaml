@@ -1,0 +1,66 @@
+Description: >
+  This template deploys the Resources required for New Relic Integration in ECS.
+
+Parameters:
+  ProjectName:
+    Description: The name of the project
+    Type: String
+    Default: ecs-poc
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+    Default: dev
+
+  LicenseKey:
+    Type: String
+    Description: New Relic license key
+
+Resources:
+  LicenseKeySecret:
+    Type: "AWS::SecretsManager::Secret"
+    Properties:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-new-relic-secret
+      Description: "New Relic license key."
+      SecretString: !Ref LicenseKey
+
+  LicenseKeySecretReadAccess:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      ManagedPolicyName: !Sub ${ProjectName}-${EnvironmentName}-new-relic-secret-read-access
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: "secretsmanager:GetSecretValue"
+            Resource: !Ref LicenseKeySecret
+
+  ECSTaskExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub ${ProjectName}-${EnvironmentName}-new-relic-task-execution-role
+      AssumeRolePolicyDocument:
+        Version: "2008-10-17"
+        Statement:
+          - Sid: ""
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: "sts:AssumeRole"
+      Description: "ECS task execution role for New Relic infrastructure"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+        - !Ref LicenseKeySecretReadAccess
+
+Outputs:
+  ExecutionRoleARN:
+    Description: "ECS Execution Role with New Relic's license secret access"
+    Value: !Ref ECSTaskExecutionRole
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-new-relic-task-execution-role-arn
+
+  LicenseKeySecretARN:
+    Description: "ARN of the license key secret for which the ExecutionRole has read access"
+    Value: !Ref LicenseKeySecret
+    Export:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-new-relic-secret-arn
