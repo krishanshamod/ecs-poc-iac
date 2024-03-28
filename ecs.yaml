@@ -133,12 +133,6 @@ Resources:
           Secrets:
             - Name: NRIA_LICENSE_KEY
               ValueFrom: !Sub "${AppSecret}:NEW_RELIC_LICENSE_KEY::"
-          LogConfiguration:
-            LogDriver: awslogs
-            Options:
-              awslogs-region: !Ref AWS::Region
-              awslogs-group: !Ref LogGroup
-              awslogs-stream-prefix: ecs
       Tags:
         - Key: Name
           Value: !Sub ${ServiceName}-${EnvironmentName}-task-definition
