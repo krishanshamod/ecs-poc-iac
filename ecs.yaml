@@ -132,8 +132,7 @@ Resources:
               Value: "{\"nrDeployMethod\":\"downloadPage\"}"
           Secrets:
             - Name: NRIA_LICENSE_KEY
-              ValueFrom: 
-                Fn::ImportValue: !Ref NewRelicSecretARN
+              ValueFrom: !Sub "${AppSecret}:NEW_RELIC_LICENSE_KEY::"
           LogConfiguration:
             LogDriver: awslogs
             Options:
