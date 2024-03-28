@@ -57,6 +57,11 @@ Parameters:
     Type: String
     Default: arn:aws:acm:us-east-1:499249761013:certificate/c5385dc2-62c6-4b0b-be96-6c1eb69cbfad
 
+  NewRelicSecretARN:
+    Description: New Relic license key secret ARN Exported Name from New Relic Integration Stack
+    Type: String
+    Default: ecs-poc-dev-new-relic-secret-arn
+
 Resources:
   Cluster:
     Type: AWS::ECS::Cluster
@@ -106,6 +111,29 @@ Resources:
           #     ValueFrom: !Sub "${AppSecret}:HOST::"
           #   - Name: NODE_ENV
           #     ValueFrom: !Sub "${AppSecret}:NODE_ENV::"
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !Ref LogGroup
+              awslogs-stream-prefix: ecs
+        - Name: newrelic-infra
+          Image: newrelic/nri-ecs:1.11.0
+          Environment:
+            - Name: NRIA_OVERRIDE_HOST_ROOT
+              Value: ""
+            - Name: NRIA_IS_FORWARD_ONLY
+              Value: "true"
+            - Name: FARGATE
+              Value: "true"
+            - Name: NRIA_PASSTHROUGH_ENVIRONMENT
+              Value: "ECS_CONTAINER_METADATA_URI,ECS_CONTAINER_METADATA_URI_V4,FARGATE"
+            - Name: NRIA_CUSTOM_ATTRIBUTES
+              Value: "{\"nrDeployMethod\":\"downloadPage\"}"
+          Secrets:
+            - Name: NRIA_LICENSE_KEY
+              ValueFrom: 
+                Fn::ImportValue: !Ref NewRelicSecretARN
           LogConfiguration:
             LogDriver: awslogs
             Options:
