@@ -35,12 +35,12 @@ Parameters:
   MinContainers:
     Description: Minimum number of containers
     Type: Number
-    Default: 2
+    Default: 1
 
   MaxContainers:
     Description: Maximum number of containers
     Type: Number
-    Default: 10
+    Default: 2
 
   AutoScalingTargetValue:
     Description: Target CPU utilization for autoscaling
@@ -236,7 +236,7 @@ Resources:
           Enable: true
           Rollback: true
       LaunchType: FARGATE
-      DesiredCount: 2
+      DesiredCount: 1
       HealthCheckGracePeriodSeconds: 30
       NetworkConfiguration:
         AwsvpcConfiguration:
