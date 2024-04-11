@@ -117,22 +117,22 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-group: !Ref LogGroup
               awslogs-stream-prefix: ecs
-        - Name: newrelic-infra
-          Image: newrelic/nri-ecs:1.11.0
-          Environment:
-            - Name: NRIA_OVERRIDE_HOST_ROOT
-              Value: ""
-            - Name: NRIA_IS_FORWARD_ONLY
-              Value: "true"
-            - Name: FARGATE
-              Value: "true"
-            - Name: NRIA_PASSTHROUGH_ENVIRONMENT
-              Value: "ECS_CONTAINER_METADATA_URI,ECS_CONTAINER_METADATA_URI_V4,FARGATE"
-            - Name: NRIA_CUSTOM_ATTRIBUTES
-              Value: "{\"nrDeployMethod\":\"downloadPage\"}"
-          Secrets:
-            - Name: NRIA_LICENSE_KEY
-              ValueFrom: !Sub "${AppSecret}:NEW_RELIC_LICENSE_KEY::"
+        # - Name: newrelic-infra
+        #   Image: newrelic/nri-ecs:1.11.0
+        #   Environment:
+        #     - Name: NRIA_OVERRIDE_HOST_ROOT
+        #       Value: ""
+        #     - Name: NRIA_IS_FORWARD_ONLY
+        #       Value: "true"
+        #     - Name: FARGATE
+        #       Value: "true"
+        #     - Name: NRIA_PASSTHROUGH_ENVIRONMENT
+        #       Value: "ECS_CONTAINER_METADATA_URI,ECS_CONTAINER_METADATA_URI_V4,FARGATE"
+        #     - Name: NRIA_CUSTOM_ATTRIBUTES
+        #       Value: "{\"nrDeployMethod\":\"downloadPage\"}"
+        #   Secrets:
+        #     - Name: NRIA_LICENSE_KEY
+        #       ValueFrom: !Sub "${AppSecret}:NEW_RELIC_LICENSE_KEY::"
       Tags:
         - Key: Name
           Value: !Sub ${ServiceName}-${EnvironmentName}-task-definition
