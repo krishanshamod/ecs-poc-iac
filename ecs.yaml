@@ -464,7 +464,7 @@ Resources:
     Type: AWS::WAFv2::WebACLAssociation
     Properties:
       ResourceArn: !Ref LoadBalancer
-      WebACLArn: !Ref WebApplicationFirewall
+      WebACLArn: !GetAtt WebApplicationFirewall.Arn
 
 Outputs:
   LoadBalancerURL:
