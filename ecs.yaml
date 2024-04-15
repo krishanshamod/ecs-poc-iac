@@ -416,6 +416,57 @@ Resources:
         ScaleOutCooldown: 10
         TargetValue: !Ref AutoScalingTargetValue
 
+  WebApplicationFirewall:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      Name: !Sub ${ProjectName}-${EnvironmentName}-waf
+      Scope: REGIONAL
+      AssociationConfig:
+        RequestBody:
+
+      DefaultAction:
+        Allow: {}
+      VisibilityConfig:
+        SampledRequestsEnabled: true
+        CloudWatchMetricsEnabled: true
+        MetricName: !Sub ${ProjectName}-${EnvironmentName}-waf
+      Rules:
+        - Name: !Sub ${ProjectName}-${EnvironmentName}-waf-rule
+          Priority: 0
+          Action:
+            Block: {}
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesCommonRuleSet
+              ExcludedRules:
+                - Name: SizeRestrictions_BODY
+                - Name: SizeRestrictions_HEADERS
+                - Name: SizeRestrictions_QUERYSTRINGS
+                - Name: SizeRestrictions_COOKIES
+                - Name: SizeRestrictions_FILE_UPLOADS
+                - Name: SQLi_BODY
+                - Name: SQLi_HEADERS
+                - Name: SQLi_QUERY_ARGS
+                - Name: SQLi_COOKIES
+                - Name: XSS_BODY
+                - Name: XSS_HEADERS
+                - Name: XSS_QUERY_ARGS
+                - Name: XSS_COOKIES
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-${EnvironmentName}-waf
+        - Key: Project
+          Value: !Ref ProjectName
+        - Key: Environment
+          Value: !Ref EnvironmentName
+
+  WebApplicationFirewallAssociation:
+    Type: AWS::WAFv2::WebACLAssociation
+    Properties:
+      ResourceArn: !Ref LoadBalancer
+      WebACLArn: !Ref WebApplicationFirewall
+
 Outputs:
   LoadBalancerURL:
     Description: The URL of the load balancer
