@@ -430,6 +430,10 @@ Resources:
       Rules:
         - Name: !Sub ${ProjectName}-${EnvironmentName}-waf-rule
           Priority: 0
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: !Sub ${ProjectName}-${EnvironmentName}-waf-rule
           Action:
             Block: {}
           Statement:
