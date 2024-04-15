@@ -421,9 +421,6 @@ Resources:
     Properties:
       Name: !Sub ${ProjectName}-${EnvironmentName}-waf
       Scope: REGIONAL
-      AssociationConfig:
-        RequestBody:
-
       DefaultAction:
         Allow: {}
       VisibilityConfig:
