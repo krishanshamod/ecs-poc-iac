@@ -426,9 +426,9 @@ Resources:
       VisibilityConfig:
         SampledRequestsEnabled: true
         CloudWatchMetricsEnabled: true
-        MetricName: !Sub ${ProjectName}-${EnvironmentName}-waf
+        MetricName: !Sub ${ProjectName}-${EnvironmentName}-waf-metric
       Rules:
-        - Name: AWS-AWSManagedRulesCommonRuleSet
+        - Name: AWSManagedRulesCommonRuleSet
           Priority: 0
           Statement:
             ManagedRuleGroupStatement:
@@ -439,7 +439,7 @@ Resources:
           VisibilityConfig:
             SampledRequestsEnabled: true
             CloudWatchMetricsEnabled: true
-            MetricName: AWS-AWSManagedRulesCommonRuleSet
+            MetricName: AWSManagedRulesCommonRuleSetMetric
         - Name: AWSManagedRulesKnownBadInputsRuleSet
           Priority: 1
           Statement:
@@ -451,7 +451,7 @@ Resources:
           VisibilityConfig:
             SampledRequestsEnabled: true
             CloudWatchMetricsEnabled: true
-            MetricName: AWSManagedRulesKnownBadInputsRuleSet
+            MetricName: AWSManagedRulesKnownBadInputsRuleSetMetric
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName}-${EnvironmentName}-waf
