@@ -428,32 +428,30 @@ Resources:
         CloudWatchMetricsEnabled: true
         MetricName: !Sub ${ProjectName}-${EnvironmentName}-waf
       Rules:
-        - Name: !Sub ${ProjectName}-${EnvironmentName}-waf-rule
+        - Name: AWS-AWSManagedRulesCommonRuleSet
           Priority: 0
-          VisibilityConfig:
-            SampledRequestsEnabled: true
-            CloudWatchMetricsEnabled: true
-            MetricName: !Sub ${ProjectName}-${EnvironmentName}-waf-rule
-          Action:
-            Block: {}
           Statement:
             ManagedRuleGroupStatement:
               VendorName: AWS
               Name: AWSManagedRulesCommonRuleSet
-              ExcludedRules:
-                - Name: SizeRestrictions_BODY
-                - Name: SizeRestrictions_HEADERS
-                - Name: SizeRestrictions_QUERYSTRINGS
-                - Name: SizeRestrictions_COOKIES
-                - Name: SizeRestrictions_FILE_UPLOADS
-                - Name: SQLi_BODY
-                - Name: SQLi_HEADERS
-                - Name: SQLi_QUERY_ARGS
-                - Name: SQLi_COOKIES
-                - Name: XSS_BODY
-                - Name: XSS_HEADERS
-                - Name: XSS_QUERY_ARGS
-                - Name: XSS_COOKIES
+          OverrideAction:
+            None: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: AWS-AWSManagedRulesCommonRuleSet
+        - Name: AWSManagedRulesKnownBadInputsRuleSet
+          Priority: 1
+          Statement:
+            ManagedRuleGroupStatement:
+              VendorName: AWS
+              Name: AWSManagedRulesKnownBadInputsRuleSet
+          OverrideAction:
+            None: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: AWSManagedRulesKnownBadInputsRuleSet
       Tags:
         - Key: Name
           Value: !Sub ${ProjectName}-${EnvironmentName}-waf
