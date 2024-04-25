@@ -553,6 +553,13 @@ Resources:
                 TextTransformations:
                   - Priority: 0
                     Type: NONE 
+        Tags:
+          - Key: Name
+            Value: !Sub ${ProjectName}-${EnvironmentName}-rule-group
+          - Key: Project
+            Value: !Ref ProjectName
+          - Key: Environment
+            Value: !Ref EnvironmentName
 
 Outputs:
   LoadBalancerURL:
