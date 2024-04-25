@@ -532,13 +532,7 @@ Resources:
           - Name: RequestBodySizeRestrictions
             Priority: 0
             Action:
-              Allow:
-                CustomRequestHandling:
-                  InsertHeaders:
-                    - Name: AllowActionHeader1Name
-                      Value: AllowActionHeader1Value
-                    - Name: AllowActionHeader2Name
-                      Value: AllowActionHeader2Value
+              Block: {}
             VisibilityConfig:
               SampledRequestsEnabled: true
               CloudWatchMetricsEnabled: true
