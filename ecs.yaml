@@ -518,6 +518,41 @@ Resources:
       ResourceArn: !Ref LoadBalancer
       WebACLArn: !GetAtt WebApplicationFirewall.Arn
 
+  WebApplicationFirewallRuleGroup:
+      Type: AWS::WAFv2::RuleGroup
+      Properties:
+        Name: !Sub ${ProjectName}-${EnvironmentName}-rule-group
+        VisibilityConfig:
+          SampledRequestsEnabled: true
+          CloudWatchMetricsEnabled: true
+          MetricName: !Sub ${ProjectName}-${EnvironmentName}-rule-group-metric
+        Capacity: 100
+        Rules:
+          - Name: RequestBodySizeRestrictions
+            Priority: 0
+            Action:
+              Allow:
+                CustomRequestHandling:
+                  InsertHeaders:
+                    - Name: AllowActionHeader1Name
+                      Value: AllowActionHeader1Value
+                    - Name: AllowActionHeader2Name
+                      Value: AllowActionHeader2Value
+            VisibilityConfig:
+              SampledRequestsEnabled: true
+              CloudWatchMetricsEnabled: true
+              MetricName: RequestBodySizeRestrictionsMetric
+            Statement:
+              SizeConstraintStatement:
+                ComparisonOperator: GT
+                Size: 8000
+                FieldToMatch:
+                  Body: 
+                    OversizeHandling: CONTINUE
+                TextTransformations:
+                  - Priority: 0
+                    Type: NONE 
+
 Outputs:
   LoadBalancerURL:
     Description: The URL of the load balancer
