@@ -428,15 +428,17 @@ Resources:
         CloudWatchMetricsEnabled: true
         MetricName: !Sub ${ProjectName}-${EnvironmentName}-waf-metric
       Rules:
-        # - Name: CustomRuleGroup
-        #   Priority: 0
-        #   Statement:
-        #     RuleGroupReferenceStatement:
-        #       Arn: !GetAtt WebApplicationFirewallRuleGroup.Arn
-        #   VisibilityConfig:
-        #     SampledRequestsEnabled: true
-        #     CloudWatchMetricsEnabled: true
-        #     MetricName: CustomRuleGroupMetric
+        - Name: CustomRuleGroup
+          Priority: 0
+          Statement:
+            RuleGroupReferenceStatement:
+              Arn: !GetAtt WebApplicationFirewallRuleGroup.Arn
+          OverrideAction:
+            None: {}
+          VisibilityConfig:
+            SampledRequestsEnabled: true
+            CloudWatchMetricsEnabled: true
+            MetricName: CustomRuleGroupMetric
         - Name: AWSManagedRulesCommonRuleSet
           Priority: 1
           Statement:
