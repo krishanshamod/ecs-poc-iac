@@ -522,11 +522,12 @@ Resources:
       Type: AWS::WAFv2::RuleGroup
       Properties:
         Name: !Sub ${ProjectName}-${EnvironmentName}-rule-group
+        Scope: REGIONAL
+        Capacity: 100
         VisibilityConfig:
           SampledRequestsEnabled: true
           CloudWatchMetricsEnabled: true
           MetricName: !Sub ${ProjectName}-${EnvironmentName}-rule-group-metric
-        Capacity: 100
         Rules:
           - Name: RequestBodySizeRestrictions
             Priority: 0
