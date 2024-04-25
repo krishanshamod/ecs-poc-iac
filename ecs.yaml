@@ -445,6 +445,10 @@ Resources:
             ManagedRuleGroupStatement:
               VendorName: AWS
               Name: AWSManagedRulesCommonRuleSet
+              RuleActionOverrides:
+                - Name: SizeRestrictions_BODY
+                  ActionToUse:
+                    Allow: {}
           OverrideAction:
             None: {}
           VisibilityConfig:
@@ -523,12 +527,6 @@ Resources:
         - Key: Environment
           Value: !Ref EnvironmentName
 
-  WebApplicationFirewallAssociation:
-    Type: AWS::WAFv2::WebACLAssociation
-    Properties:
-      ResourceArn: !Ref LoadBalancer
-      WebACLArn: !GetAtt WebApplicationFirewall.Arn
-
   WebApplicationFirewallRuleGroup:
       Type: AWS::WAFv2::RuleGroup
       Properties:
@@ -580,6 +578,12 @@ Resources:
             Value: !Ref ProjectName
           - Key: Environment
             Value: !Ref EnvironmentName
+
+  WebApplicationFirewallAssociation:
+    Type: AWS::WAFv2::WebACLAssociation
+    Properties:
+      ResourceArn: !Ref LoadBalancer
+      WebACLArn: !GetAtt WebApplicationFirewall.Arn
 
 Outputs:
   LoadBalancerURL:
