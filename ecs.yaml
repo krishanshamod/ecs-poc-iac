@@ -531,12 +531,6 @@ Resources:
         Rules:
           - Name: RequestBodySizeRestrictions
             Priority: 0
-            Action:
-              Block: {}
-            VisibilityConfig:
-              SampledRequestsEnabled: true
-              CloudWatchMetricsEnabled: true
-              MetricName: RequestBodySizeRestrictionsMetric
             Statement:
               OrStatement:
                 Statements:
@@ -562,6 +556,12 @@ Resources:
                       TextTransformations:
                         - Priority: 0
                           Type: NONE
+            Action:
+              Block: {}
+            VisibilityConfig:
+              SampledRequestsEnabled: true
+              CloudWatchMetricsEnabled: true
+              MetricName: RequestBodySizeRestrictionsMetric
         Tags:
           - Key: Name
             Value: !Sub ${ProjectName}-${EnvironmentName}-rule-group
