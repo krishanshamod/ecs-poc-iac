@@ -428,8 +428,13 @@ Resources:
         CloudWatchMetricsEnabled: true
         MetricName: !Sub ${ProjectName}-${EnvironmentName}-waf-metric
       Rules:
-        - Name: AWSManagedRulesCommonRuleSet
+        - Name: CustomRuleGroup
           Priority: 0
+          Statement:
+            RuleGroupReferenceStatement:
+              Arn: !GetAtt WebApplicationFirewallRuleGroup.Arn
+        - Name: AWSManagedRulesCommonRuleSet
+          Priority: 1
           Statement:
             ManagedRuleGroupStatement:
               VendorName: AWS
@@ -441,7 +446,7 @@ Resources:
             CloudWatchMetricsEnabled: true
             MetricName: AWSManagedRulesCommonRuleSetMetric
         - Name: AWSManagedRulesKnownBadInputsRuleSet
-          Priority: 1
+          Priority: 2
           Statement:
             ManagedRuleGroupStatement:
               VendorName: AWS
@@ -453,7 +458,7 @@ Resources:
             CloudWatchMetricsEnabled: true
             MetricName: AWSManagedRulesKnownBadInputsRuleSetMetric
         - Name: AWSManagedRulesAmazonIpReputationList
-          Priority: 2
+          Priority: 3
           Statement:
             ManagedRuleGroupStatement:
               VendorName: AWS
@@ -469,7 +474,7 @@ Resources:
             CloudWatchMetricsEnabled: true
             MetricName: AWSManagedRulesAmazonIpReputationListMetric
         - Name: AWSManagedRulesAnonymousIpList
-          Priority: 3
+          Priority: 4
           Statement:
             ManagedRuleGroupStatement:
               VendorName: AWS
@@ -481,7 +486,7 @@ Resources:
             CloudWatchMetricsEnabled: true
             MetricName: AWSManagedRulesAnonymousIpListMetric
         - Name: AWSManagedRulesLinuxRuleSet
-          Priority: 4
+          Priority: 5
           Statement:
             ManagedRuleGroupStatement:
               VendorName: AWS
@@ -493,7 +498,7 @@ Resources:
             CloudWatchMetricsEnabled: true
             MetricName: AWSManagedRulesLinuxRuleSetMetric
         - Name: AWSManagedRulesSQLiRuleSet
-          Priority: 5
+          Priority: 6
           Statement:
             ManagedRuleGroupStatement:
               VendorName: AWS
@@ -539,7 +544,7 @@ Resources:
                         Body:
                           OversizeHandling: CONTINUE
                       ComparisonOperator: GT
-                      Size: 10485760
+                      Size: 31457280
                       TextTransformations:
                         - Priority: 0
                           Type: NONE
@@ -552,7 +557,7 @@ Resources:
                           InvalidFallbackBehavior: EVALUATE_AS_STRING
                           OversizeHandling: CONTINUE
                       ComparisonOperator: GT
-                      Size: 10485760
+                      Size: 31457280
                       TextTransformations:
                         - Priority: 0
                           Type: NONE
