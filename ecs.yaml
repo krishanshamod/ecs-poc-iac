@@ -518,41 +518,41 @@ Resources:
       ResourceArn: !Ref LoadBalancer
       WebACLArn: !GetAtt WebApplicationFirewall.Arn
 
-  WebApplicationFirewallRuleGroup:
-      Type: AWS::WAFv2::RuleGroup
-      Properties:
-        Name: !Sub ${ProjectName}-${EnvironmentName}-rule-group
-        Scope: REGIONAL
-        Capacity: 100
-        VisibilityConfig:
-          SampledRequestsEnabled: true
-          CloudWatchMetricsEnabled: true
-          MetricName: !Sub ${ProjectName}-${EnvironmentName}-rule-group-metric
-        Rules:
-          - Name: RequestBodySizeRestrictions
-            Priority: 0
-            Action:
-              Allow:
-                CustomRequestHandling:
-                  InsertHeaders:
-                    - Name: AllowActionHeader1Name
-                      Value: AllowActionHeader1Value
-                    - Name: AllowActionHeader2Name
-                      Value: AllowActionHeader2Value
-            VisibilityConfig:
-              SampledRequestsEnabled: true
-              CloudWatchMetricsEnabled: true
-              MetricName: RequestBodySizeRestrictionsMetric
-            Statement:
-              SizeConstraintStatement:
-                ComparisonOperator: GT
-                Size: 8000
-                FieldToMatch:
-                  Body: 
-                    OversizeHandling: CONTINUE
-                TextTransformations:
-                  - Priority: 0
-                    Type: NONE 
+  # WebApplicationFirewallRuleGroup:
+  #     Type: AWS::WAFv2::RuleGroup
+  #     Properties:
+  #       Name: !Sub ${ProjectName}-${EnvironmentName}-rule-group
+  #       Scope: REGIONAL
+  #       Capacity: 100
+  #       VisibilityConfig:
+  #         SampledRequestsEnabled: true
+  #         CloudWatchMetricsEnabled: true
+  #         MetricName: !Sub ${ProjectName}-${EnvironmentName}-rule-group-metric
+  #       Rules:
+  #         - Name: RequestBodySizeRestrictions
+  #           Priority: 0
+  #           Action:
+  #             Allow:
+  #               CustomRequestHandling:
+  #                 InsertHeaders:
+  #                   - Name: AllowActionHeader1Name
+  #                     Value: AllowActionHeader1Value
+  #                   - Name: AllowActionHeader2Name
+  #                     Value: AllowActionHeader2Value
+  #           VisibilityConfig:
+  #             SampledRequestsEnabled: true
+  #             CloudWatchMetricsEnabled: true
+  #             MetricName: RequestBodySizeRestrictionsMetric
+  #           Statement:
+  #             SizeConstraintStatement:
+  #               ComparisonOperator: GT
+  #               Size: 8000
+  #               FieldToMatch:
+  #                 Body: 
+  #                   OversizeHandling: CONTINUE
+  #               TextTransformations:
+  #                 - Priority: 0
+  #                   Type: NONE 
 
 Outputs:
   LoadBalancerURL:
