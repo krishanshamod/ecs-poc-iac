@@ -538,15 +538,30 @@ Resources:
               CloudWatchMetricsEnabled: true
               MetricName: RequestBodySizeRestrictionsMetric
             Statement:
-              SizeConstraintStatement:
-                ComparisonOperator: GT
-                Size: 8000
-                FieldToMatch:
-                  Body: 
-                    OversizeHandling: CONTINUE
-                TextTransformations:
-                  - Priority: 0
-                    Type: NONE 
+              OrStatement:
+                Statements:
+                  - SizeConstraintStatement:
+                      FieldToMatch:
+                        Body:
+                          OversizeHandling: CONTINUE
+                      ComparisonOperator: GT
+                      Size: 10485760
+                      TextTransformations:
+                        - Priority: 0
+                          Type: NONE
+                  - SizeConstraintStatement:
+                      FieldToMatch:
+                        JsonBody:
+                          MatchPattern:
+                            All: {}
+                          MatchScope: ALL
+                          InvalidFallbackBehavior: EVALUATE_AS_STRING
+                          OversizeHandling: CONTINUE
+                      ComparisonOperator: GT
+                      Size: 10485760
+                      TextTransformations:
+                        - Priority: 0
+                          Type: NONE
         Tags:
           - Key: Name
             Value: !Sub ${ProjectName}-${EnvironmentName}-rule-group
